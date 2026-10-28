@@ -1,0 +1,16 @@
+{
+  "name": "bytnode",
+  "description": "Official BytNode skills: use the BytNode crypto market-data API from any AI agent.",
+  "owner": {
+    "name": "BytNode",
+    "email": "contact@bytnode.com"
+  },
+  "plugins": [
+    {
+      "name": "bytnode",
+      "source": "./",
+      "description": "Skills that teach AI agents to use BytNode, the crypto market-data API.",
+      "version": "1.0.0"
+    }
+  ]
+}

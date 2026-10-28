@@ -1,0 +1,55 @@
+{
+  "skill_name": "bytnode-skills",
+  "note": "One realistic task per skill. Each is run once WITHOUT the skills (baseline) and once WITH them. Agents work offline from live data: no API key is given; evals/fixtures holds real captured responses.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "api-free-plan-30d-export",
+      "skill": "bytnode-api",
+      "prompt": "I just signed up for BytNode on the free plan and put my key in BYTNODE_API_KEY. Write me a Python script (requests is fine) that downloads the last 30 days of hourly candles and hourly open interest for SOLUSDT into one CSV, and prints the total traded volume in USD over the period. Make it robust, I'll run it from cron.",
+      "expected_output": "Script that checks /v1/limits (or handles 403 history_depth) because Free allows only 1 day of 1h history; follows `next`; uses epoch ms; converts base-unit volume to USD (volume x close); keeps is_closed rows; handles 429 Retry-After."
+    },
+    {
+      "id": 2,
+      "name": "mcp-free-plan-funding-liquidations",
+      "skill": "bytnode-mcp",
+      "prompt": "I connected the BytNode MCP server to Claude Desktop (free plan). Before I trust it: write down exactly which MCP tool calls (tool name + JSON arguments, in order) you would make to answer 'is BTC funding getting crowded, and how much got liquidated on BTC in the last 24 hours, longs vs shorts?', and how you'd read the answers.",
+      "expected_output": "Uses get_pair_data (not get_pair_brief: Free has no snapshot family) with last='24h' / last='1h' instead of current values; liquidations_cumulative with last='24h' and detail='summary' reading summary.sums long_usd/short_usd; funding_next/funding_rate units (_pct per 8h); reads ranges/unavailable."
+    },
+    {
+      "id": 3,
+      "name": "analysis-btc-state-from-fixture",
+      "skill": "bytnode-market-analysis",
+      "prompt": "Here are real BytNode API responses for BTC captured a few minutes ago: evals/fixtures/btc_market_2026-10-28.json (path relative to the bytnode-skills repo). Give me a short read of BTC's market state: positioning, flows, liquidations, sentiment. Numbers please.",
+      "expected_output": "Funding 0.0084 % per 8 h (~9.2 % APR) read correctly (not 0.84 %); OI in BTC units (~370k BTC, ~30 bn USD via price); liquidations_cumulative is a 5-minute window (not 24 h); CVD/buy_volume in BTC; buy_ratio fraction; basis_pct small negative; every number with unit and time; no trade advice."
+    },
+    {
+      "id": 4,
+      "name": "backtest-1m-financial-plan",
+      "skill": "bytnode-history-backtest",
+      "prompt": "We're on BytNode's Financial plan. I want a pandas loader that pulls 1-minute candles for ETHUSDT for the last 7 days plus RSI(14) on the same candles, ready for a backtest. Write it.",
+      "expected_output": "Notices Financial 1m window is 3 days (checks /v1/limits, falls back or uses 5m/1h); pages forward with order=asc + since_ms following next; drops is_closed=false; aligns time = bucket start (no lookahead: a bar is known at time + 1m); uses POST /v1/indicators or computes RSI with warm-up; budgets requests."
+    },
+    {
+      "id": 5,
+      "name": "stream-browser-liquidations-candles",
+      "skill": "bytnode-realtime-stream",
+      "prompt": "Build me a small browser dashboard (plain HTML + JS, plus whatever tiny backend you need) that shows BTC liquidations live and a live 1-minute candle built from BytNode's WebSocket trades. We're on the Traders plan.",
+      "expected_output": "Never ships the API key to the browser: backend calls POST /v1/ws/token, browser opens wss://ws.bytnode.com/ws?token=; resubscribes after reconnect with backoff; buckets on data[].time and closes a minute ~2 s late; liquidation side = liquidated position; detects seq gaps; knows there is no replay."
+    },
+    {
+      "id": 6,
+      "name": "sdk-funding-history-pandas",
+      "skill": "bytnode-sdk",
+      "prompt": "Using the official BytNode Python SDK, give me code that pulls the last 5 days of settled funding for BTCUSDT, ETHUSDT and SOLUSDT into a single pandas DataFrame (one column per pair), and handles rate limits and a spent quota properly. Include the install command.",
+      "expected_output": "Installs from the GitHub release wheel (not PyPI); client.funding.rate.history.iter(symbol, since=...).to_pandas(); RateLimitError.is_quota distinguished; relies on built-in retries; funding rate_pct per 8 h."
+    },
+    {
+      "id": 7,
+      "name": "brief-morning-report-from-fixture",
+      "skill": "bytnode-market-brief",
+      "prompt": "Write my morning crypto market brief from this BytNode data: evals/fixtures/btc_market_2026-10-28.json (path relative to the bytnode-skills repo).",
+      "expected_output": "Fixed-section brief; every number with unit and timestamp; states what is missing (no ETH data, 5-min liquidation window) rather than inventing; no advice; sources the data time."
+    }
+  ]
+}

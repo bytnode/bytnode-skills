@@ -1,0 +1,336 @@
+{
+ "note": "Real BytNode API responses for BTC, captured 2026-10-28 ~15:17 UTC. Key = the request. Lists inside responses are truncated to their first 3 elements (cvd_series, orderbook ranges...).",
+ "responses": {
+  "GET /v1/price-change?symbol=BTCUSDT": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:16:57.834Z",
+   "data_type": "price_change",
+   "symbol": "BTCUSDT",
+   "data": {
+    "time": "2026-10-28T15:16:56.315Z",
+    "price": 80693.6,
+    "changes_pct": {
+     "1m": 0.00291233560021,
+     "5m": 0.043392769029,
+     "15m": 0.0369682650627,
+     "30m": 0.128539505083,
+     "1h": 0.107062263592,
+     "4h": -0.827864197384,
+     "1d": 0.488697736285,
+     "1w": -4.64839882865
+    }
+   }
+  },
+  "GET /v1/klines?symbol=BTCUSDT&timeframe=1h": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:16:52.828Z",
+   "data_type": "klines",
+   "symbol": "BTCUSDT",
+   "timeframe": "1h",
+   "data": {
+    "time": "2026-10-28T14:00:00.000Z",
+    "open": 80740.0,
+    "high": 80873.34,
+    "low": 80467.81,
+    "close": 80599.27,
+    "volume": 17911.157945,
+    "buy_volume": 9298.46325109,
+    "sell_volume": 8612.69469392,
+    "is_volume_estimated": false,
+    "volume_spot": 2566.98037501,
+    "buy_volume_spot": 1296.39059109,
+    "sell_volume_spot": 1270.58978392,
+    "is_volume_spot_estimated": false,
+    "volume_futures": 15344.17757,
+    "buy_volume_futures": 8002.07266,
+    "sell_volume_futures": 7342.10491,
+    "is_volume_futures_estimated": false,
+    "is_closed": true
+   }
+  },
+  "GET /v1/funding/rate?symbol=BTCUSDT": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:09.309Z",
+   "data_type": "funding_rate",
+   "symbol": "BTCUSDT",
+   "market": "futures",
+   "data": {
+    "time": "2026-10-28T00:00:00.000Z",
+    "period_end_at": "2026-10-28T08:00:00.000Z",
+    "settled_at": "2026-10-28T08:00:00.085Z",
+    "rate_pct": 0.00840149031347,
+    "apr_pct": 9.19963189325,
+    "is_closed": true
+   }
+  },
+  "GET /v1/funding/next?symbol=BTCUSDT": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:10.502Z",
+   "data_type": "funding_next",
+   "symbol": "BTCUSDT",
+   "market": "futures",
+   "data": {
+    "time": "2026-10-28T16:00:00.000Z",
+    "estimated_rate_pct": 0.00723241351837,
+    "apr_pct": 7.91949280261,
+    "is_past": false
+   }
+  },
+  "GET /v1/oi?symbol=BTCUSDT": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:14.045Z",
+   "data_type": "oi",
+   "symbol": "BTCUSDT",
+   "market": "futures",
+   "data": {
+    "time": "2026-10-28T15:17:13.942Z",
+    "oi": 370507.52848
+   }
+  },
+  "GET /v1/oi/change?symbol=BTCUSDT": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:14.558Z",
+   "data_type": "oi_change",
+   "symbol": "BTCUSDT",
+   "market": "futures",
+   "data": {
+    "time": "2026-10-28T15:17:13.942Z",
+    "oi": 370534.79272,
+    "previous_oi": 370519.50798,
+    "oi_change": 15.28474,
+    "oi_change_pct": 0.0041252186918,
+    "window_start_at": "2026-10-28T15:16:13.942Z",
+    "window_s": 60
+   }
+  },
+  "GET /v1/basis?symbol=BTCUSDT": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:12.569Z",
+   "data_type": "basis",
+   "symbol": "BTCUSDT",
+   "data": {
+    "time": "2026-10-28T15:16:33.000Z",
+    "basis_value": -32.273229896,
+    "basis_pct": -0.0400134610687,
+    "futures_price": 80623.2676138,
+    "spot_price": 80655.5408437
+   }
+  },
+  "GET /v1/cvd?symbol=BTCUSDT&timeframe=1h": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:04.777Z",
+   "data_type": "cvd",
+   "symbol": "BTCUSDT",
+   "timeframe": "1h",
+   "market": "all",
+   "data": {
+    "time": "2026-10-28T14:00:00.000Z",
+    "cvd_series": [
+     -120.26512359,
+     -89.21557532,
+     165.65818551
+    ],
+    "net_volume": 685.76855717,
+    "buy_volume": 9298.46325109,
+    "sell_volume": 8612.69469392,
+    "sample_count": 60,
+    "buy_sell_coverage_ratio": 1.0,
+    "is_volume_estimated": false,
+    "is_closed": true
+   }
+  },
+  "GET /v1/buy-sell-ratio?symbol=BTCUSDT&timeframe=1h": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:08.073Z",
+   "data_type": "buy_sell_ratio",
+   "symbol": "BTCUSDT",
+   "timeframe": "1h",
+   "market": "all",
+   "data": {
+    "time": "2026-10-28T14:00:00.000Z",
+    "buy_volume": 9298.46325109,
+    "sell_volume": 8612.69469392,
+    "buy_ratio": 0.51914361314,
+    "sample_count": 60,
+    "buy_sell_coverage_ratio": 1.0,
+    "is_volume_estimated": false,
+    "is_closed": true
+   }
+  },
+  "GET /v1/orderbook?symbol=BTCUSDT&timeframe=1h": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:05.884Z",
+   "data_type": "orderbook",
+   "symbol": "BTCUSDT",
+   "timeframe": "1h",
+   "market": "all",
+   "data": {
+    "time": "2026-10-28T14:00:00.000Z",
+    "is_closed": true,
+    "ranges": [
+     {
+      "range_pct": 0.25,
+      "bids_quantity": 3769.57147086,
+      "asks_quantity": 3364.95109757,
+      "bids_usd": 303417477.067,
+      "asks_usd": 271433411.023,
+      "imbalance_ratio": 0.055638891243
+     },
+     {
+      "range_pct": 0.5,
+      "bids_quantity": 5120.78789002,
+      "asks_quantity": 4303.1943671,
+      "bids_usd": 411905481.011,
+      "asks_usd": 347291385.822,
+      "imbalance_ratio": 0.0851084850483
+     },
+     {
+      "range_pct": 0.75,
+      "bids_quantity": 5813.05350906,
+      "asks_quantity": 4839.31340469,
+      "bids_usd": 467326653.728,
+      "asks_usd": 390754962.488,
+      "imbalance_ratio": 0.089235906926
+     }
+    ]
+   }
+  },
+  "GET /v1/liquidations/cumulative?symbol=BTCUSDT": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:15.938Z",
+   "data_type": "liquidations_cumulative",
+   "symbol": "BTCUSDT",
+   "market": "futures",
+   "data": {
+    "time": "2026-10-28T15:17:00.000Z",
+    "long_usd": 0.0,
+    "short_usd": 0.0,
+    "total_usd": 0.0,
+    "window_start_at": "2026-10-28T15:12:00.000Z",
+    "window_s": 300
+   }
+  },
+  "GET /v1/liquidations/big-small-ratio?symbol=BTCUSDT&timeframe=1h": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:17.047Z",
+   "data_type": "liquidations_big_small_ratio",
+   "symbol": "BTCUSDT",
+   "timeframe": "1h",
+   "market": "futures",
+   "data": {
+    "time": "2026-10-28T14:00:00.000Z",
+    "big_count": 1,
+    "big_usd": 243139.4265,
+    "small_count": 26,
+    "small_usd": 188719.11162,
+    "big_small_ratio": 1.2883667394,
+    "sample_count": 14,
+    "is_closed": true
+   }
+  },
+  "GET /v1/options/summary?asset=BTC": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:32.768Z",
+   "data_type": "options_summary",
+   "asset": "BTC",
+   "data": {
+    "time": "2026-10-28T15:16:49.283Z",
+    "underlying_price_usd": 80544.25,
+    "oi_total_usd": 38599021780.5,
+    "oi_call_usd": 23105936782.2,
+    "oi_put_usd": 15493084998.3,
+    "volume_total_usd": 594547257.508,
+    "volume_call_usd": 329189318.073,
+    "volume_put_usd": 265357939.435,
+    "put_call_ratio": 0.670523993223,
+    "put_call_label": "bullish",
+    "iv_atm_30d_pct": 35.6707216254,
+    "nearest_expiry": {
+     "expiry_at": "2026-10-29T08:00:00.000Z",
+     "time_to_expiry_s": 60190.717,
+     "max_pain_strike_usd": 80500.0,
+     "put_call_ratio": 0.830141255344,
+     "iv_atm_pct": 38.473328155
+    },
+    "coverage": {
+     "oi_coverage_ratio": 1.0
+    }
+   }
+  },
+  "GET /v1/fear-greed": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:21.225Z",
+   "data_type": "fear_greed",
+   "data": {
+    "time": "2026-10-28T00:00:00.000Z",
+    "value": 51,
+    "label": "neutral"
+   }
+  },
+  "GET /v1/global": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:20.209Z",
+   "data_type": "global",
+   "data": {
+    "time": "2026-10-28T15:11:59.999Z",
+    "market_cap_total_usd": 2695657669710.0,
+    "volume_total_usd": 60479354494.8,
+    "btc_dominance_pct": 60.0685161547,
+    "eth_dominance_pct": 10.570259437,
+    "others_dominance_pct": 29.3612244082,
+    "active_cryptocurrency_count": 8097
+   }
+  },
+  "GET /v1/macro/risk": {
+   "status": "ok",
+   "server_time": "2026-10-28T15:17:29.087Z",
+   "data_type": "macro_risk",
+   "data": {
+    "time": "2026-10-27T00:00:00.000Z",
+    "oldest_input_date": "2026-10-23",
+    "score": 100.0,
+    "label": "risk_on",
+    "risk_on_signal_count": 5,
+    "available_signal_count": 5,
+    "signal_count": 5,
+    "signals": {
+     "vix": {
+      "time": "2026-10-27T00:00:00.000Z",
+      "condition": "VIX < 20",
+      "is_risk_on": true
+     },
+     "dxy": {
+      "time": "2026-10-23T00:00:00.000Z",
+      "condition": "Broad Dollar Index (Fed, trade-weighted) down over 7 days",
+      "is_risk_on": true
+     },
+     "yield_curve": {
+      "time": "2026-10-27T00:00:00.000Z",
+      "condition": "10Y-2Y curve positive",
+      "is_risk_on": true
+     },
+     "sp500": {
+      "time": "2026-10-27T00:00:00.000Z",
+      "condition": "S&P 500 > SMA50",
+      "is_risk_on": true
+     },
+     "gold": {
+      "time": "2026-10-27T00:00:00.000Z",
+      "condition": "Gold down over 7 days",
+      "is_risk_on": true
+     }
+    },
+    "context": {
+     "vix": 17.52,
+     "dxy": 121.3202,
+     "dxy_7d_ago": 121.4048,
+     "yield_curve_10y2y_pp": 0.29,
+     "sp500": 7722.6,
+     "sp500_sma_50d": 7697.01,
+     "gold_usd": 4062.72728755,
+     "gold_7d_ago_usd": 4118.7895276
+    }
+   }
+  }
+ }
+}

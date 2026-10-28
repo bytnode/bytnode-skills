@@ -1,0 +1,10 @@
+{
+  "name": "bytnode",
+  "description": "Skills that teach AI agents to use BytNode, the crypto market-data API: REST, MCP, WebSocket, SDKs, history for backtests and market analysis.",
+  "version": "1.0.0",
+  "author": { "name": "BytNode", "email": "contact@bytnode.com", "url": "https://bytnode.com" },
+  "homepage": "https://bytnode.com/skills",
+  "repository": "https://github.com/bytnode/bytnode-skills",
+  "license": "MIT",
+  "keywords": ["crypto", "market-data", "trading", "derivatives", "mcp", "bytnode"]
+}
