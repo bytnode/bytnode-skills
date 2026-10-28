@@ -27,7 +27,9 @@ store — after N days you own N days of history; overlap the reads and de-dupli
 larger plan. Never let a loader silently return a shorter history than asked: a backtest on 3 days
 presented as 7 is wrong. Indicative windows: the `bytnode-api` skill's `references/plans.md`.
 
-Quota: one request = up to 1,000 rows (`limit=1000`). 7 days of 1m = 10,080 rows ≈ 11 requests;
+When the range equals the window exactly (3 days of 1m on a 3-day window), start a couple of
+minutes inside it (`since_ms = now − window + 2 min`): by the time the request lands, "now" has
+moved. Quota: one request = up to 1,000 rows (`limit=1000`). 7 days of 1m = 10,080 rows ≈ 11 requests;
 plan the job against the per-minute rate (Free: 30/min).
 
 ## 2. Read every page, forward
