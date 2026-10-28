@@ -51,11 +51,14 @@ npx skills add bytnode/bytnode-skills -a codex -g          # -g: ~/.agents/skill
                                                            # without -g: .agents/skills of this repo
 ```
 
-Or ask Codex itself, at its prompt, with the built-in installer (it writes to `~/.codex/skills`):
+Or ask Codex itself, at its prompt, with the built-in installer (it writes to `~/.codex/skills`).
+Give it the path of each skill — a URL to the whole `skills/` folder is refused:
 
 ```
-$skill-installer install the skills under https://github.com/bytnode/bytnode-skills/tree/main/skills
+$skill-installer install from the repo bytnode/bytnode-skills the paths skills/bytnode-api skills/bytnode-mcp skills/bytnode-market-analysis skills/bytnode-history-backtest skills/bytnode-realtime-stream skills/bytnode-sdk skills/bytnode-market-brief
 ```
+
+One skill: `$skill-installer install https://github.com/bytnode/bytnode-skills/tree/main/skills/bytnode-api`.
 
 Codex picks up new skills automatically; type `/skills` to check, restart Codex if one is missing.
 
@@ -96,7 +99,11 @@ Copy-Item -Recurse -Force bytnode-skills\skills\* "$HOME\.agents\skills\"
 your plan). Start with `bytnode-mcp` and `bytnode-market-analysis`.
 
 ```bash
-cd bytnode-skills/skills && zip -r bytnode-mcp.zip bytnode-mcp      # PowerShell: Compress-Archive bytnode-mcp bytnode-mcp.zip
+cd bytnode-skills/skills && zip -r bytnode-mcp.zip bytnode-mcp      # macOS, Linux
+```
+
+```powershell
+cd bytnode-skills\skills; Compress-Archive bytnode-mcp bytnode-mcp.zip   # Windows
 ```
 
 **Any other chatbot** (no skill upload): paste the content of the `SKILL.md` you need into the
