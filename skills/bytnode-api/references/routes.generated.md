@@ -1,8 +1,8 @@
 # BytNode REST routes
 
-> Generated from https://api.bytnode.com/openapi.json (contract **3.0.1**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/openapi.json (contract **1.0.2**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
-140 routes. Base URL `https://api.bytnode.com`, key in `X-API-KEY`. `family` is the identifier `GET /v1/limits` lists in `families` (`null` there = every family). Search this file for a path or a field name.
+138 routes. Base URL `https://api.bytnode.com`, key in `X-API-KEY`. `family` is the identifier `GET /v1/limits` lists in `families` (`null` there = every family). Search this file for a path or a field name.
 
 ## Contents
 
@@ -11,7 +11,7 @@
 - [Market: prices & volumes](#market-prices--volumes) (6)
 - [Order flow](#order-flow) (33)
 - [Derivatives](#derivatives) (11)
-- [Liquidations](#liquidations) (7)
+- [Liquidations](#liquidations) (5)
 - [Tokenomics & sentiment](#tokenomics--sentiment) (14)
 - [Macro](#macro) (10)
 - [ETF](#etf) (2)
@@ -118,7 +118,7 @@ For a BROWSER (or any client you do not trust with your API key): your server ca
 
 Many fields for one symbol in one request. Family: `snapshot`.
 
-52 fields for one symbol in a single call (41 plain, 11 multi-timeframe): prices, flow, derivatives, liquidations, macro, on-chain, options.
+51 fields for one symbol in a single call (40 plain, 11 multi-timeframe): prices, flow, derivatives, liquidations, macro, on-chain, options.
 
 Parameters: `symbol` plus one query key per field — see `snapshot.generated.md`.
 
@@ -149,7 +149,6 @@ Parameters: `symbol` plus one query key per field — see `snapshot.generated.md
   - `funding_next` (object, nullable): Next funding forecast.
   - `funding_rate` (object, nullable): Latest settled funding window.
   - `global` (object, nullable): Total crypto market cap and dominance.
-  - `heatmap_clusters` (object, nullable): Liquidation heatmap clusters.
   - `liquidations_cumulative` (object, nullable): Liquidations long/short USD over the last 5 minutes (latest value).
   - `liquidations_events` (object, nullable): Individual liquidations (N latest events, at most your plan's count).
   - `macro_correlations` (object, nullable): BTC correlation with DXY, S&P 500, gold, VIX.
@@ -428,7 +427,7 @@ Parameters:
   - `sample_count` (integer, nullable, count): Number of points of the CVD series behind the bucket — the `sample_count` of `/v1/cvd` for the same bucket.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
-  - `is_closed` (boolean, nullable): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
+  - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/buy-sell-ratio/futures
 
@@ -449,7 +448,7 @@ Parameters:
   - `sample_count` (integer, nullable, count): Number of points of the CVD series behind the bucket — the `sample_count` of `/v1/cvd` for the same bucket.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
-  - `is_closed` (boolean, nullable): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
+  - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/buy-sell-ratio/futures/history
 
@@ -472,7 +471,7 @@ Parameters:
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `buy_ratio` (number, nullable, fraction (0.585 = 58.5 %)): buy_volume / (buy_volume + sell_volume).
-  - `sample_count` (integer, count): Number of points of the CVD series behind the bucket — the `sample_count` of `/v1/cvd/history` for the same bucket.
+  - `sample_count` (integer, nullable, count): Number of points of the CVD series behind the bucket — the `sample_count` of `/v1/cvd/history` for the same bucket.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
@@ -498,7 +497,7 @@ Parameters:
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `buy_ratio` (number, nullable, fraction (0.585 = 58.5 %)): buy_volume / (buy_volume + sell_volume).
-  - `sample_count` (integer, count): Number of points of the CVD series behind the bucket — the `sample_count` of `/v1/cvd/history` for the same bucket.
+  - `sample_count` (integer, nullable, count): Number of points of the CVD series behind the bucket — the `sample_count` of `/v1/cvd/history` for the same bucket.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
@@ -522,7 +521,7 @@ Parameters:
   - `sample_count` (integer, nullable, count): Number of points of the CVD series behind the bucket — the `sample_count` of `/v1/cvd` for the same bucket.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
-  - `is_closed` (boolean, nullable): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
+  - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/buy-sell-ratio/spot/history
 
@@ -545,7 +544,7 @@ Parameters:
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `buy_ratio` (number, nullable, fraction (0.585 = 58.5 %)): buy_volume / (buy_volume + sell_volume).
-  - `sample_count` (integer, count): Number of points of the CVD series behind the bucket — the `sample_count` of `/v1/cvd/history` for the same bucket.
+  - `sample_count` (integer, nullable, count): Number of points of the CVD series behind the bucket — the `sample_count` of `/v1/cvd/history` for the same bucket.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
@@ -877,14 +876,14 @@ Parameters:
 
 `data`: object or null.
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket the row covers: a 1h bucket at 14:00 covers 14:00:00 to 14:59:59.999.
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `net_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): buy_volume - sell_volume over the row, base asset units.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
-  - `trade_rate` (number, trades per second): Average number of trades per second over the bucket.
+  - `trade_rate` (number, nullable, trades per second): Average number of trades per second over the bucket.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
@@ -902,14 +901,14 @@ Parameters:
 
 `data`: object or null.
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket the row covers: a 1h bucket at 14:00 covers 14:00:00 to 14:59:59.999.
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `net_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): buy_volume - sell_volume over the row, base asset units.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
-  - `trade_rate` (number, trades per second): Average number of trades per second over the bucket.
+  - `trade_rate` (number, nullable, trades per second): Average number of trades per second over the bucket.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
@@ -931,14 +930,14 @@ Parameters:
 
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket the row covers: a 1h bucket at 14:00 covers 14:00:00 to 14:59:59.999.
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `net_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): buy_volume - sell_volume over the row, base asset units.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
-  - `trade_rate` (number, trades per second): Average number of trades per second over the bucket.
+  - `trade_rate` (number, nullable, trades per second): Average number of trades per second over the bucket.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
@@ -960,13 +959,13 @@ Parameters:
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the second the row covers.
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
   - `net_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): buy_volume - sell_volume over the row, base asset units.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
-  - `trade_rate` (number, trades per second): Average number of trades per second over the bucket.
+  - `trade_rate` (number, nullable, trades per second): Average number of trades per second over the bucket.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
 
 ### GET /v1/trades-kline/history
@@ -987,14 +986,14 @@ Parameters:
 
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket the row covers: a 1h bucket at 14:00 covers 14:00:00 to 14:59:59.999.
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `net_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): buy_volume - sell_volume over the row, base asset units.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
-  - `trade_rate` (number, trades per second): Average number of trades per second over the bucket.
+  - `trade_rate` (number, nullable, trades per second): Average number of trades per second over the bucket.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
@@ -1012,14 +1011,14 @@ Parameters:
 
 `data`: object or null.
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket the row covers: a 1h bucket at 14:00 covers 14:00:00 to 14:59:59.999.
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `net_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): buy_volume - sell_volume over the row, base asset units.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
-  - `trade_rate` (number, trades per second): Average number of trades per second over the bucket.
+  - `trade_rate` (number, nullable, trades per second): Average number of trades per second over the bucket.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
@@ -1041,14 +1040,14 @@ Parameters:
 
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket the row covers: a 1h bucket at 14:00 covers 14:00:00 to 14:59:59.999.
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
   - `buy_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) buy volume, base asset units, aggregated across venues.
   - `sell_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Aggressive (taker) sell volume, base asset units, aggregated across venues.
   - `net_volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): buy_volume - sell_volume over the row, base asset units.
   - `buy_sell_coverage_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the volume (in USD) whose buy/sell split is known.
-  - `trade_rate` (number, trades per second): Average number of trades per second over the bucket.
+  - `trade_rate` (number, nullable, trades per second): Average number of trades per second over the bucket.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
@@ -1067,7 +1066,7 @@ Parameters:
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the latest closed bucket of `timeframe` — the first row of `/v1/trades/avg-size/history` for the same `timeframe`.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
@@ -1087,7 +1086,7 @@ Parameters:
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the latest closed bucket of `timeframe` — the first row of `/v1/trades/avg-size/history` for the same `timeframe`.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
@@ -1112,9 +1111,9 @@ Parameters:
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket of `timeframe`, the value aggregating the bucket's minutes; the row covers `time` to `time` + the envelope's `step` (ex…
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
-  - `sample_count` (integer, count): Number of source points in the bucket (one-minute points with data).
+  - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/trades/avg-size/history
@@ -1137,9 +1136,9 @@ Parameters:
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket of `timeframe`, the value aggregating the bucket's minutes; the row covers `time` to `time` + the envelope's `step` (ex…
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
-  - `sample_count` (integer, count): Number of source points in the bucket (one-minute points with data).
+  - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/trades/avg-size/spot
@@ -1157,7 +1156,7 @@ Parameters:
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the latest closed bucket of `timeframe` — the first row of `/v1/trades/avg-size/history` for the same `timeframe`.
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
   - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
@@ -1182,9 +1181,9 @@ Parameters:
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket of `timeframe`, the value aggregating the bucket's minutes; the row covers `time` to `time` + the envelope's `step` (ex…
   - `avg_trade_size` (number, nullable, base asset quantity (BTC for BTCUSDT)): Average trade size, base asset units (NOT dollars: multiply by the price for a notional).
   - `volume` (number, nullable, base asset quantity (BTC for BTCUSDT)): Traded volume over the row, base asset units (BTC for BTCUSDT, NOT dollars), aggregated across venues, over the market(s) the route covers:…
-  - `trade_count` (integer, count): Number of trades.
+  - `trade_count` (integer, nullable, count): Number of trades.
   - `is_volume_estimated` (boolean, nullable): `true` when some base-asset quantities of this row were ESTIMATED from USD amounts (history where a source reported amounts but not quantit…
-  - `sample_count` (integer, count): Number of source points in the bucket (one-minute points with data).
+  - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ## Derivatives
@@ -1228,7 +1227,7 @@ Parameters:
   - `basis_pct` (number, percent (58.5 = 58.5 %)): (futures - spot) / spot, in percent.
   - `futures_price` (number, quote currency (USDT for BTCUSDT)): Perpetual futures price, open-interest weighted across venues.
   - `spot_price` (number, quote currency (USDT for BTCUSDT)): Spot price across venues at the instant of the row, paired with the futures price of the same instant.
-  - `sample_count` (integer, count): Number of source points in the bucket (one-minute points with data).
+  - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/funding/cumulative
@@ -1246,8 +1245,8 @@ Parameters:
   - `window_start_at` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the 24-hour window summed (inclusive).
   - `window_s` (integer, nullable, seconds): Length of the window, in seconds (86400 = 24 hours).
   - `rolling_24h_rate_pct` (number, percent (58.5 = 58.5 %)): Sum of the last three settled 8-hour funding rates — a ROLLING 24-hour window — in percent.
-  - `apr_pct` (number, percent (58.5 = 58.5 %)): Annualised rate in percent.
-  - `sample_count` (integer, count): Number of 8-hour funding windows summed.
+  - `apr_pct` (number, nullable, percent (58.5 = 58.5 %)): Annualised rate in percent.
+  - `sample_count` (integer, nullable, count): Number of 8-hour funding windows summed.
 
 ### GET /v1/funding/cumulative/history
 
@@ -1269,8 +1268,8 @@ Parameters:
   - `window_start_at` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the 24-hour window summed (inclusive).
   - `window_s` (integer, nullable, seconds): Length of the window, in seconds (86400 = 24 hours).
   - `rolling_24h_rate_pct` (number, percent (58.5 = 58.5 %)): Sum of the last three settled 8-hour funding rates — a ROLLING 24-hour window — in percent.
-  - `apr_pct` (number, percent (58.5 = 58.5 %)): Annualised rate in percent.
-  - `sample_count` (integer, count): Number of 8-hour funding windows summed.
+  - `apr_pct` (number, nullable, percent (58.5 = 58.5 %)): Annualised rate in percent.
+  - `sample_count` (integer, nullable, count): Number of 8-hour funding windows summed.
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/funding/next
@@ -1286,7 +1285,7 @@ Parameters:
 `data`: object or null.
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the next funding settlement the forecast is for.
   - `estimated_rate_pct` (number, percent (58.5 = 58.5 %)): Venue forecast of the NEXT funding settlement, in percent per 8 h (0.01 = 0.01 %), normalised to 8 h, OI-weighted.
-  - `apr_pct` (number, percent (58.5 = 58.5 %)): Annualised rate in percent.
+  - `apr_pct` (number, nullable, percent (58.5 = 58.5 %)): Annualised rate in percent.
   - `is_past` (boolean): `true` if the forecast settlement instant is already past (the next forecast is not published yet).
 
 ### GET /v1/funding/rate
@@ -1305,7 +1304,7 @@ Parameters:
   - `period_end_at` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): End of the 8-hour funding period (exclusive): the instant of the settlement that pays it.
   - `settled_at` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Instant of the last settlement counted in the window: `period_end_at` for a complete settled window; `null` for the window in progress (`?l…
   - `rate_pct` (number, percent (58.5 = 58.5 %)): Settled funding rate of the 8-hour period, in percent (0.01 = 0.01 % per 8 h), normalised to 8 h and open-interest weighted across venues.
-  - `apr_pct` (number, percent (58.5 = 58.5 %)): Annualised rate in percent.
+  - `apr_pct` (number, nullable, percent (58.5 = 58.5 %)): Annualised rate in percent.
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/funding/rate/history
@@ -1328,7 +1327,7 @@ Parameters:
   - `period_end_at` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): End of the 8-hour funding period (exclusive): the instant of the settlement that pays it.
   - `settled_at` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Instant of the last settlement counted in the window: `period_end_at` for a complete settled window; `null` for the window in progress (`?l…
   - `rate_pct` (number, percent (58.5 = 58.5 %)): Settled funding rate of the 8-hour period, in percent (0.01 = 0.01 % per 8 h), normalised to 8 h and open-interest weighted across venues.
-  - `apr_pct` (number, percent (58.5 = 58.5 %)): Annualised rate in percent.
+  - `apr_pct` (number, nullable, percent (58.5 = 58.5 %)): Annualised rate in percent.
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/oi
@@ -1386,7 +1385,7 @@ Parameters:
   - `previous_oi` (number, base asset quantity (BTC for BTCUSDT)): Total open interest at the start of the window (`window_start_at`).
   - `oi_change` (number, base asset quantity (BTC for BTCUSDT)): oi - previous_oi, base asset units.
   - `oi_change_pct` (number, percent (58.5 = 58.5 %)): Relative open interest change, percent.
-  - `sample_count` (integer, count): Number of source points in the bucket (one-minute points with data).
+  - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/oi/history
@@ -1408,56 +1407,10 @@ Parameters:
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket the row covers: a 1h bucket at 14:00 covers 14:00:00 to 14:59:59.999.
   - `oi` (number, base asset quantity (BTC for BTCUSDT)): Total open interest across venues, base asset units.
-  - `sample_count` (integer, count): Number of source points in the bucket (one-minute points with data).
+  - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ## Liquidations
-
-### GET /v1/heatmap/clusters
-
-Liquidation heatmap clusters. Family: `derivatives`.
-
-The most attractive cluster of estimated liquidation levels above and below the price, projected from open interest changes and the leverage mix.
-
-Parameters:
-- `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
-- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,density_up`.
-
-`data`: object or null.
-  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
-  - `density_up` (number, dimensionless score): Estimated liquidation density of the most attractive cluster ABOVE the price (short positions).
-  - `dist_up_ratio` (number, fraction (0.585 = 58.5 %)): Distance from the price to the cluster above, as a fraction of the price (0.037 = 3.7 % higher).
-  - `density_down` (number, dimensionless score): Estimated liquidation density of the most attractive cluster BELOW the price (long positions).
-  - `dist_down_ratio` (number, fraction (0.585 = 58.5 %)): Distance from the price to the cluster below, as a fraction of the price.
-  - `attraction_up` (number, dimensionless score): density_up / dist_up_ratio²: how strongly the cluster above pulls the price.
-  - `attraction_down` (number, dimensionless score): density_down / dist_down_ratio²: how strongly the cluster below pulls the price.
-
-### GET /v1/heatmap/clusters/history
-
-Liquidation clusters history. Family: `derivatives`.
-
-One row per closed bucket of `timeframe` (required).
-
-Parameters:
-- `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
-- `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
-- `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
-- `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
-- `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
-- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,density_up`.
-- `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
-- `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
-
-`data`: list (newest first unless `order=asc`).
-  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket of `timeframe`; the value is the LAST one of the bucket's minutes.
-  - `density_up` (number, dimensionless score): Estimated liquidation density of the most attractive cluster ABOVE the price (short positions).
-  - `dist_up_ratio` (number, fraction (0.585 = 58.5 %)): Distance from the price to the cluster above, as a fraction of the price (0.037 = 3.7 % higher).
-  - `density_down` (number, dimensionless score): Estimated liquidation density of the most attractive cluster BELOW the price (long positions).
-  - `dist_down_ratio` (number, fraction (0.585 = 58.5 %)): Distance from the price to the cluster below, as a fraction of the price.
-  - `attraction_up` (number, dimensionless score): density_up / dist_up_ratio²: how strongly the cluster above pulls the price.
-  - `attraction_down` (number, dimensionless score): density_down / dist_down_ratio²: how strongly the cluster below pulls the price.
-  - `sample_count` (integer, count): Number of source points in the bucket (one-minute points with data).
-  - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/liquidations/big-small-ratio
 
@@ -1477,6 +1430,7 @@ Parameters:
   - `small_count` (integer, count): Liquidations below 100,000 USD.
   - `small_usd` (number, USD): Notional of liquidations below 100,000 USD.
   - `big_small_ratio` (number, nullable, big / small): big_usd / small_usd: the notional of liquidations of 100,000 USD or more DIVIDED BY that of the smaller ones (8.2 = the big ones weigh 8.2…
+  - `venues` (array): Venues whose liquidations are summed in the row, by name (empty when none in the row).
   - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
@@ -1503,7 +1457,8 @@ Parameters:
   - `small_count` (integer, count): Liquidations below 100,000 USD.
   - `small_usd` (number, USD): Notional of liquidations below 100,000 USD.
   - `big_small_ratio` (number, nullable, big / small): big_usd / small_usd: the notional of liquidations of 100,000 USD or more DIVIDED BY that of the smaller ones (8.2 = the big ones weigh 8.2…
-  - `sample_count` (integer, count): Minutes of the bucket that had at least one liquidation.
+  - `venues` (array): Venues whose liquidations are summed in the row, by name (empty when none in the row).
+  - `sample_count` (integer, nullable, count): Minutes of the bucket that had at least one liquidation.
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/liquidations/cumulative
@@ -1521,6 +1476,7 @@ Parameters:
   - `long_usd` (number, USD): Long positions liquidated, USD.
   - `short_usd` (number, USD): Short positions liquidated, USD.
   - `total_usd` (number, USD): Total, USD.
+  - `venues` (array): Venues whose liquidations are summed in the row, by name (empty when none in the row).
   - `window_start_at` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the ROLLING window the value covers (inclusive).
   - `window_s` (integer, nullable, seconds): Length of that rolling window, in whole seconds: it runs from `window_start_at` to `time` (excluded).
 
@@ -1545,7 +1501,8 @@ Parameters:
   - `long_usd` (number, USD): Long positions liquidated, USD.
   - `short_usd` (number, USD): Short positions liquidated, USD.
   - `total_usd` (number, USD): Total, USD.
-  - `sample_count` (integer, count): Number of source points in the bucket (one-minute points with data).
+  - `sample_count` (integer, nullable, count): Number of source points in the bucket (one-minute points with data).
+  - `venues` (array): Venues whose liquidations are summed in the row, by name (empty when none in the row).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/liquidations/events
@@ -1566,6 +1523,7 @@ Parameters:
   - `price` (number, quote currency (USDT for BTCUSDT)): Price.
   - `quantity` (number, base asset quantity (BTC for BTCUSDT)): Quantity traded or liquidated, in base asset units.
   - `value_usd` (number, USD): Notional value: price × quantity, in the pair's quote currency (USDT for BTCUSDT), taken as USD.
+  - `venue` (string, nullable): Venue where the liquidation happened (liquidations name their venues).
 
 ## Tokenomics & sentiment
 
@@ -1579,13 +1537,13 @@ Parameters:
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,value`.
 
 `data`: object or null.
-  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
-  - `value` (integer, nullable, score from 0 to 100): Altcoin Season Index (CoinMarketCap): how many of the top altcoins outperformed BTC over the last 90 days.
-  - `year_low` (integer, nullable, score from 0 to 100): Lowest value of the index over the last year.
-  - `year_high` (integer, nullable, score from 0 to 100): Highest value of the index over the last year.
-  - `year_low_at` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Day of that lowest value, at midnight UTC.
-  - `year_high_at` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Day of that highest value, at midnight UTC.
-  - `altcoin_market_cap_usd` (number, nullable, USD): Total market capitalisation of the altcoins (excluding BTC).
+  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
+  - `value` (integer, score from 0 to 100): Altcoin Season Index (CoinMarketCap): how many of the top altcoins outperformed BTC over the last 90 days.
+  - `year_low` (integer, score from 0 to 100): Lowest value of the index over the last year.
+  - `year_high` (integer, score from 0 to 100): Highest value of the index over the last year.
+  - `year_low_at` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Day of that lowest value, at midnight UTC.
+  - `year_high_at` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Day of that highest value, at midnight UTC.
+  - `altcoin_market_cap_usd` (number, USD): Total market capitalisation of the altcoins (excluding BTC).
 
 ### GET /v1/altcoin-season/history
 
@@ -1602,10 +1560,10 @@ Parameters:
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
 
 `data`: list (newest first unless `order=asc`).
-  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
-  - `value` (integer, nullable, score from 0 to 100): Altcoin Season Index (CoinMarketCap): how many of the top altcoins outperformed BTC over the last 90 days.
-  - `altcoin_market_cap_usd` (number, nullable, USD): Total market capitalisation of the altcoins (excluding BTC).
-  - `is_closed` (boolean, nullable): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
+  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
+  - `value` (integer, score from 0 to 100): Altcoin Season Index (CoinMarketCap): how many of the top altcoins outperformed BTC over the last 90 days.
+  - `altcoin_market_cap_usd` (number, USD): Total market capitalisation of the altcoins (excluding BTC).
+  - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/fear-greed
 
@@ -1631,9 +1589,9 @@ Parameters:
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,value`.
 
 `data`: object or null.
-  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
-  - `value` (integer, nullable, score from 0 to 100): CMC Crypto Fear & Greed Index (CoinMarketCap), a different index from `/v1/fear-greed` (alternative.me).
-  - `label` (string, nullable): Label of the value, from CoinMarketCap's scale: `extreme_fear`, `fear`, `neutral`, `greed` or `extreme_greed` (snake_case, like every label…
+  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
+  - `value` (integer, score from 0 to 100): CMC Crypto Fear & Greed Index (CoinMarketCap), a different index from `/v1/fear-greed` (alternative.me).
+  - `label` (string): Label of the value, from CoinMarketCap's scale: `extreme_fear`, `fear`, `neutral`, `greed` or `extreme_greed` (snake_case, like every label…
 
 ### GET /v1/fear-greed/cmc/history
 
@@ -1650,10 +1608,10 @@ Parameters:
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
 
 `data`: list (newest first unless `order=asc`).
-  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
-  - `value` (integer, nullable, score from 0 to 100): CMC Crypto Fear & Greed Index (CoinMarketCap), a different index from `/v1/fear-greed` (alternative.me).
-  - `label` (string, nullable): Label of the value, from CoinMarketCap's scale: `extreme_fear`, `fear`, `neutral`, `greed` or `extreme_greed` (snake_case, like every label…
-  - `is_closed` (boolean, nullable): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
+  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
+  - `value` (integer, score from 0 to 100): CMC Crypto Fear & Greed Index (CoinMarketCap), a different index from `/v1/fear-greed` (alternative.me).
+  - `label` (string): Label of the value, from CoinMarketCap's scale: `extreme_fear`, `fear`, `neutral`, `greed` or `extreme_greed` (snake_case, like every label…
+  - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/fear-greed/history
 
@@ -1728,10 +1686,10 @@ Parameters:
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,value`.
 
 `data`: object or null.
-  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
-  - `value` (number, nullable, index points): CoinMarketCap 100 Index: the 100 largest crypto assets, weighted by market capitalisation.
+  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
+  - `value` (number, index points): CoinMarketCap 100 Index: the 100 largest crypto assets, weighted by market capitalisation.
   - `constituents` (array): The assets of the index, with their weight.
-  - `change_24h_pct` (number, nullable, percent (58.5 = 58.5 %)): Change of the index over the last 24 hours.
+  - `change_24h_pct` (number, percent (58.5 = 58.5 %)): Change of the index over the last 24 hours.
 
 ### GET /v1/indices/cmc100/history
 
@@ -1748,9 +1706,9 @@ Parameters:
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
 
 `data`: list (newest first unless `order=asc`).
-  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
-  - `value` (number, nullable, index points): CoinMarketCap 100 Index: the 100 largest crypto assets, weighted by market capitalisation.
-  - `is_closed` (boolean, nullable): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
+  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
+  - `value` (number, index points): CoinMarketCap 100 Index: the 100 largest crypto assets, weighted by market capitalisation.
+  - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/indices/cmc20
 
@@ -1762,10 +1720,10 @@ Parameters:
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,value`.
 
 `data`: object or null.
-  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
-  - `value` (number, nullable, index points): CoinMarketCap 20 Index: the 20 largest crypto assets, weighted by market capitalisation.
+  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
+  - `value` (number, index points): CoinMarketCap 20 Index: the 20 largest crypto assets, weighted by market capitalisation.
   - `constituents` (array): The assets of the index, with their weight.
-  - `change_24h_pct` (number, nullable, percent (58.5 = 58.5 %)): Change of the index over the last 24 hours.
+  - `change_24h_pct` (number, percent (58.5 = 58.5 %)): Change of the index over the last 24 hours.
 
 ### GET /v1/indices/cmc20/history
 
@@ -1782,9 +1740,9 @@ Parameters:
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
 
 `data`: list (newest first unless `order=asc`).
-  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
-  - `value` (number, nullable, index points): CoinMarketCap 20 Index: the 20 largest crypto assets, weighted by market capitalisation.
-  - `is_closed` (boolean, nullable): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
+  - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
+  - `value` (number, index points): CoinMarketCap 20 Index: the 20 largest crypto assets, weighted by market capitalisation.
+  - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/tokenomics
 
@@ -2102,7 +2060,7 @@ Parameters:
   - `time_to_expiry_s` (number, seconds): Time left before expiry, in seconds.
   - `oi_call_usd` (number, nullable, USD): Call open interest, USD.
   - `oi_put_usd` (number, nullable, USD): Put open interest, USD.
-  - `put_call_ratio` (number, nullable, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
+  - `put_call_ratio` (number, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
   - `max_pain_strike_usd` (number, USD): Strike at which option holders lose the most at expiry (max pain).
   - `top_call_strike_usd` (number, USD): Strike with the largest call open interest.
   - `top_put_strike_usd` (number, USD): Strike with the largest put open interest.
@@ -2199,7 +2157,7 @@ Parameters:
   - `expiry_at` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Expiry instant (08:00 UTC).
   - `time_to_expiry_s` (number, seconds): Time left before expiry, in seconds.
   - `max_pain_strike_usd` (number, USD): Strike at which option holders lose the most at expiry (max pain).
-  - `put_call_ratio` (number, nullable, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
+  - `put_call_ratio` (number, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
   - `oi_call_usd` (number, nullable, USD): Call open interest, USD.
   - `oi_put_usd` (number, nullable, USD): Put open interest, USD.
 
@@ -2222,7 +2180,7 @@ Parameters:
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The instant of the options snapshot the max pain was computed on (one row per snapshot, about every minute; no `timeframe`).
   - `max_pain_strike_usd` (number, USD): Strike at which option holders lose the most at expiry (max pain).
-  - `put_call_ratio` (number, nullable, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
+  - `put_call_ratio` (number, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/options/oi
@@ -2341,7 +2299,7 @@ Parameters:
 
 `data`: object or null.
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the options snapshot (all venues read together).
-  - `put_call_ratio` (number, nullable, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
+  - `put_call_ratio` (number, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
   - `put_call_label` (string): `bullish` (put_call_ratio < 0.7), `neutral`, or `bearish` (put_call_ratio > 1).
 
 ### GET /v1/options/put-call-ratio/history
@@ -2362,7 +2320,7 @@ Parameters:
 
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket; the value is the LAST options snapshot of the bucket.
-  - `put_call_ratio` (number, nullable, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
+  - `put_call_ratio` (number, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
   - `put_call_label` (string): `bullish` (put_call_ratio < 0.7), `neutral`, or `bearish` (put_call_ratio > 1).
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
@@ -2385,7 +2343,7 @@ Parameters:
   - `volume_total_usd` (number, USD): Total traded volume, USD.
   - `volume_call_usd` (number, USD): Call volume, USD.
   - `volume_put_usd` (number, USD): Put volume, USD.
-  - `put_call_ratio` (number, nullable, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
+  - `put_call_ratio` (number, puts / calls): Put/call open interest ratio (a quotient, not a share: 1.2 = 1.2 puts per call).
   - `put_call_label` (string): `bullish` (put_call_ratio < 0.7), `neutral`, or `bearish` (put_call_ratio > 1).
   - `iv_atm_30d_pct` (number, percent (58.5 = 58.5 %)): At-the-money implied volatility at a constant 30-day maturity, annualised, in percent (55.2 = 55.2 %).
   - `nearest_expiry` (object): The next expiry: its instant, the time left, max pain, put/call ratio, ATM IV.
@@ -2626,8 +2584,8 @@ Parameters:
 `data`: object or null.
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
   - `tvl_usd` (number, USD): Total value locked in Ethereum DeFi.
-  - `dex_volume_24h_usd` (number, USD): DEX volume over 24 h.
-  - `dex_volume_7d_usd` (number, USD): DEX volume over 7 days.
+  - `dex_volume_24h_usd` (number, nullable, USD): DEX volume over 24 h.
+  - `dex_volume_7d_usd` (number, nullable, USD): DEX volume over 7 days.
   - `eth_market_cap_usd` (number, USD): ETH market capitalisation.
   - `defi_health_ratio` (number, fraction (0.585 = 58.5 %)): tvl_usd / eth_market_cap_usd.
   - `defi_health_change_30d_pct` (number, nullable, percent (58.5 = 58.5 %)): Relative change of `defi_health_ratio` (TVL / ETH market cap) over 30 days, percent.
@@ -2650,8 +2608,8 @@ Parameters:
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day, at midnight UTC; the value is the LAST measurement of that day.
   - `tvl_usd` (number, USD): Total value locked in Ethereum DeFi.
-  - `dex_volume_24h_usd` (number, USD): DEX volume over 24 h.
-  - `dex_volume_7d_usd` (number, USD): DEX volume over 7 days.
+  - `dex_volume_24h_usd` (number, nullable, USD): DEX volume over 24 h.
+  - `dex_volume_7d_usd` (number, nullable, USD): DEX volume over 7 days.
   - `eth_market_cap_usd` (number, USD): ETH market capitalisation.
   - `defi_health_ratio` (number, fraction (0.585 = 58.5 %)): tvl_usd / eth_market_cap_usd.
   - `defi_health_change_30d_pct` (number, nullable, percent (58.5 = 58.5 %)): Relative change of `defi_health_ratio` (TVL / ETH market cap) over 30 days, percent.
@@ -2703,13 +2661,10 @@ Ethereum gas. Family: `onchain`.
 Gas prices (gwei), base fee, block usage and congestion.
 
 Parameters:
-- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,safe_gas_price_gwei`.
+- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,base_fee_gwei`.
 
 `data`: object or null.
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
-  - `safe_gas_price_gwei` (number, gwei): Gas price for a low-priority transaction.
-  - `propose_gas_price_gwei` (number, gwei): Gas price for a standard transaction.
-  - `fast_gas_price_gwei` (number, gwei): Gas price for a fast transaction.
   - `base_fee_gwei` (number, gwei): EIP-1559 base fee (burnt).
   - `gas_used_ratio` (number, fraction (0.585 = 58.5 %)): Block gas used / gas target over recent blocks.
   - `label` (string): Congestion: `low` (gas_used_ratio < 0.5), `normal`, or `high` (> 0.8).
@@ -2766,15 +2721,12 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
-- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,safe_gas_price_gwei`.
+- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,base_fee_gwei`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
 
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day, at midnight UTC; the value is the LAST measurement of that day.
-  - `safe_gas_price_gwei` (number, gwei): Gas price for a low-priority transaction.
-  - `propose_gas_price_gwei` (number, gwei): Gas price for a standard transaction.
-  - `fast_gas_price_gwei` (number, gwei): Gas price for a fast transaction.
   - `base_fee_gwei` (number, gwei): EIP-1559 base fee (burnt).
   - `gas_used_ratio` (number, fraction (0.585 = 58.5 %)): Block gas used / gas target over recent blocks.
   - `label` (string): Congestion: `low` (gas_used_ratio < 0.5), `normal`, or `high` (> 0.8).
@@ -2872,7 +2824,7 @@ Parameters:
   - `staking_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the ETH supply staked.
   - `total_staked` (number, nullable, ETH): ETH staked (beacon chain).
   - `total_supply` (number, nullable, coins): Total coins issued (circulating + locked), net of burns.
-  - `apr_pct` (number, percent (58.5 = 58.5 %)): Annualised rate in percent.
+  - `apr_pct` (number, nullable, percent (58.5 = 58.5 %)): Annualised rate in percent.
 
 ### GET /v1/eth/staking/history
 
@@ -2893,7 +2845,7 @@ Parameters:
   - `staking_ratio` (number, nullable, fraction (0.585 = 58.5 %)): Share of the ETH supply staked.
   - `total_staked` (number, nullable, ETH): ETH staked (beacon chain).
   - `total_supply` (number, nullable, coins): Total coins issued (circulating + locked), net of burns.
-  - `apr_pct` (number, percent (58.5 = 58.5 %)): Annualised rate in percent.
+  - `apr_pct` (number, nullable, percent (58.5 = 58.5 %)): Annualised rate in percent.
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/eth/supply
@@ -2907,10 +2859,10 @@ Parameters:
 
 `data`: object or null.
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Point-in-time value: the instant of the measurement (when the source was read).
-  - `execution_issuance_cumulative` (number, ETH): Cumulative execution-layer issuance (genesis + proof-of-work rewards before the Merge), as published by Etherscan.
-  - `consensus_rewards_cumulative` (number, ETH): Cumulative consensus-layer issuance (staking rewards) since the Beacon Chain launch.
-  - `burnt_fees_cumulative` (number, ETH): ETH burnt since EIP-1559 (cumulative).
-  - `withdrawn_cumulative` (number, ETH): ETH withdrawn from staking (cumulative).
+  - `execution_issuance_cumulative` (number, nullable, ETH): Cumulative execution-layer issuance (genesis + proof-of-work rewards before the Merge), as published by Etherscan.
+  - `consensus_rewards_cumulative` (number, nullable, ETH): Cumulative consensus-layer issuance (staking rewards) since the Beacon Chain launch.
+  - `burnt_fees_cumulative` (number, nullable, ETH): ETH burnt since EIP-1559 (cumulative).
+  - `withdrawn_cumulative` (number, nullable, ETH): ETH withdrawn from staking (cumulative).
   - `total_supply` (number, nullable, coins): Total coins issued (circulating + locked), net of burns.
   - `burn_24h` (number, nullable, ETH): ETH burnt over the last 24 h.
   - `net_issuance_24h` (number, nullable, ETH): New ETH issued minus ETH burnt over 24 h.
@@ -2932,10 +2884,10 @@ Parameters:
 
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day, at midnight UTC; the value is the LAST measurement of that day.
-  - `execution_issuance_cumulative` (number, ETH): Cumulative execution-layer issuance (genesis + proof-of-work rewards before the Merge), as published by Etherscan.
-  - `consensus_rewards_cumulative` (number, ETH): Cumulative consensus-layer issuance (staking rewards) since the Beacon Chain launch.
-  - `burnt_fees_cumulative` (number, ETH): ETH burnt since EIP-1559 (cumulative).
-  - `withdrawn_cumulative` (number, ETH): ETH withdrawn from staking (cumulative).
+  - `execution_issuance_cumulative` (number, nullable, ETH): Cumulative execution-layer issuance (genesis + proof-of-work rewards before the Merge), as published by Etherscan.
+  - `consensus_rewards_cumulative` (number, nullable, ETH): Cumulative consensus-layer issuance (staking rewards) since the Beacon Chain launch.
+  - `burnt_fees_cumulative` (number, nullable, ETH): ETH burnt since EIP-1559 (cumulative).
+  - `withdrawn_cumulative` (number, nullable, ETH): ETH withdrawn from staking (cumulative).
   - `total_supply` (number, nullable, coins): Total coins issued (circulating + locked), net of burns.
   - `burn_24h` (number, nullable, ETH): ETH burnt over the last 24 h.
   - `net_issuance_24h` (number, nullable, ETH): New ETH issued minus ETH burnt over 24 h.
@@ -3024,16 +2976,16 @@ Parameters:
 
 Bitcoin NVT. Family: `onchain`.
 
-Network value to transactions ratio and its 90-day NVT Signal, derived on demand.
+Network value to transactions ratio and its NVT Signal, computed from Bitcoin blocks.
 
 Parameters:
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,nvt`.
 
 `data`: object or null.
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
-  - `nvt` (number, dimensionless ratio): Market cap / daily on-chain transaction volume (NVT ratio).
-  - `nvt_signal` (number, dimensionless ratio): NVT smoothed over 90 days (NVT Signal), less noisy.
-  - `label` (string): Zone of the NVT Signal: `undervalued` (<= 45), `fair` (> 45), `overvalued` (> 100), `bubble` (> 150).
+  - `nvt` (number, dimensionless ratio): Market cap / on-chain transaction volume of the day (NVT ratio), change returned to the sender excluded.
+  - `nvt_signal` (number, nullable, dimensionless ratio): NVT Signal: market cap of the day / 90-day average of the on-chain transaction volume in USD.
+  - `label` (string, nullable): Zone of the NVT Signal against its own last 730 days (share of those days when it was lower): `undervalued` (below 25 %), `fair` (from 25 %…
 
 ### GET /v1/btc/nvt/history
 
@@ -3051,9 +3003,9 @@ Parameters:
 
 `data`: list (newest first unless `order=asc`).
   - `time` (string, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): The day the value refers to, at midnight UTC.
-  - `nvt` (number, dimensionless ratio): Market cap / daily on-chain transaction volume (NVT ratio).
-  - `nvt_signal` (number, dimensionless ratio): NVT smoothed over 90 days (NVT Signal), less noisy.
-  - `label` (string): Zone of the NVT Signal: `undervalued` (<= 45), `fair` (> 45), `overvalued` (> 100), `bubble` (> 150).
+  - `nvt` (number, dimensionless ratio): Market cap / on-chain transaction volume of the day (NVT ratio), change returned to the sender excluded.
+  - `nvt_signal` (number, nullable, dimensionless ratio): NVT Signal: market cap of the day / 90-day average of the on-chain transaction volume in USD.
+  - `label` (string, nullable): Zone of the NVT Signal against its own last 730 days (share of those days when it was lower): `undervalued` (below 25 %), `fair` (from 25 %…
   - `is_closed` (boolean): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
 
 ### GET /v1/btc/revenue-per-difficulty

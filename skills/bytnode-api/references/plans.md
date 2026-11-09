@@ -11,7 +11,7 @@ Every metered route belongs to one family (`x-family` in the contract, `Family:`
 | Family id | What |
 |---|---|
 | `price_volume` | candles, price change, global market (`/v1/global`), `/v1/symbols`, `/v1/status`, `/v1/capabilities` |
-| `derivatives` | funding, open interest, basis, liquidations (cumulative, big/small, events, heatmap) |
+| `derivatives` | funding, open interest, basis, liquidations (cumulative, big/small, events) |
 | `indicators` | `POST /v1/indicators` |
 | `macro` | FRED series, intraday macro, net liquidity, correlations, momentum, risk |
 | `microstructure` | CVD, order book, buy/sell ratio, trade candles, average trade size, inter-venue spread |

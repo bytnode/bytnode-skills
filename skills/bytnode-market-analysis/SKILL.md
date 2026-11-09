@@ -1,6 +1,6 @@
 ---
 name: bytnode-market-analysis
-description: Use when interpreting crypto market data from BytNode — funding rates, open interest, basis, CVD and taker flow, liquidations, order book depth, liquidation heatmap, options (put/call, max pain, implied volatility), fear & greed, altcoin season, macro risk or net liquidity — to describe positioning, crowding, squeeze risk, sentiment or the state of a pair or of the whole market, from API responses, MCP tool results or a saved JSON file.
+description: Use when interpreting crypto market data from BytNode — funding rates, open interest, basis, CVD and taker flow, liquidations, order book depth, options (put/call, max pain, implied volatility), fear & greed, altcoin season, macro risk or net liquidity — to describe positioning, crowding, squeeze risk, sentiment or the state of a pair or of the whole market, from API responses, MCP tool results or a saved JSON file.
 ---
 
 # Reading the market with BytNode data
@@ -46,7 +46,6 @@ break analyses most often are repeated here.
 | Basis (`basis_pct`, perp − spot) | ≈ 0 on perpetuals | positive = perp premium (leveraged demand); negative = discount |
 | Taker flow (`net_volume`, `buy_ratio`) | `buy_ratio` 0.5 | aggressive buying/selling; divergence with price = absorption |
 | Liquidations (`long_usd`, `short_usd`) | its own history | `long_usd` = LONG positions liquidated (price fell into them) |
-| Heatmap (`attraction_up/down`, `dist_*_ratio`) | — | estimated liquidation clusters that may attract price; an estimate, not orders |
 | Order book (`ranges`) | bids ≈ asks | resting liquidity near the mid; imbalance = (bids − asks)/(bids + asks) |
 | Put/call (`put_call_ratio`, OI) | `put_call_label`: < 0.7 bullish, > 1 bearish | puts per call; hedging demand |
 | ATM IV (`iv_atm_30d_pct`) | its own history | expected volatility, annualised % |
@@ -92,8 +91,8 @@ candle close differ by a few basis points and seconds. Quote the one that matche
   MCP: `get_pair_brief`. REST: `/v1/snapshot?symbol=…&price_change=1&funding_rate=1&funding_next=1&basis=1&oi@1h=24&cvd@1h=24&liquidations_cumulative=1&fear_greed=1`
   (liquidations over 24 h: `/v1/liquidations/cumulative/history?timeframe=1h&limit=24`).
 - **Crowding / squeeze risk**: funding vs its 30-day history and vs other pairs (`rank_pairs`
-  `funding_next`); OI trend; basis; heatmap attraction above vs below. Crowded long + rising OI +
-  liquidation cluster below = long-squeeze risk (and the mirror for shorts).
+  `funding_next`); OI trend; basis. Crowded long + rising OI + positive basis = long-squeeze
+  risk (and the mirror for shorts).
 - **Market regime**: total market cap and BTC dominance (`/v1/global`), fear & greed (both
   indices), altcoin season, macro risk and net liquidity trend, BTC options IV and put/call.
 - **Screening**: `rank_pairs` on `funding_next`, `oi_usd`, `volume_usd_24h`, `price_change_pct`,

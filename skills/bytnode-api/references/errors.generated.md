@@ -1,6 +1,6 @@
 # BytNode error codes
 
-> Generated from https://api.bytnode.com/openapi.json (contract **3.0.1**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/openapi.json (contract **1.0.2**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
 Every error is `{status: "error", server_time, error: {code, message, param?, details?}}` (the WebSocket sends the same object under `op: "error"`). Branch on `error.code`; show `error.message`; read `error.details` (`suggestion`, `accepted`, `retry_after_s`, `window_s`, `earliest_ms`, `max_limit`…) for what to change. A code not listed here is a newer one: treat it as a generic error.
 

@@ -1,12 +1,12 @@
 # BytNode MCP tools
 
-> Generated from https://api.bytnode.com/.well-known/mcp/server-card.json (MCP surface **4.1.0**, REST contract 3.0.1) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/.well-known/mcp/server-card.json (MCP surface **1.0.2**, REST contract 1.0.2) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
 Endpoint: `https://api.bytnode.com/mcp` (Streamable HTTP). Auth: `X-API-KEY` header or `Authorization: Bearer <key>`; connectors (claude.ai, ChatGPT, Claude Code) sign in with OAuth instead.
 
 ## Server instructions (sent to the model at connection)
 
-BytNode MCP 4.1.0: crypto market data aggregated across the major spot and perpetual venues (never named, except spread_interexchange): pairs, options, spot ETFs, macro, on-chain, sentiment. Every response carries mcp_version: if it differs from 4.1.0, your client holds older tool definitions (reconnect it).
+BytNode MCP 1.0.2: crypto market data aggregated across the major spot and perpetual venues (never named, except spread_interexchange and the liquidations): pairs, options, spot ETFs, macro, on-chain, sentiment. Every response carries mcp_version: if it differs from 1.0.2, your client holds older tool definitions (reconnect it).
 
 READ FIRST
 - Units: _pct = percent (58.5 = 58.5 %), _ratio = fraction (0.585 = 58.5 %), _bps, _usd, _s, _count. Prices in the quote currency, quantities in base units; oi_usd = oi x close. describe_fields gives the unit of every column and the thresholds of every label.
@@ -202,7 +202,6 @@ FIELDS:
 - liquidations_events: Individual liquidations: side, price, quantity, USD. [min_usd, now, N<=10000]
 - liquidations_cumulative: USD liquidated per bucket, long and short positions. [tf]
 - liquidations_big_small_ratio: Large vs small liquidations per bucket: counts, USD, ratio. [tf]
-- heatmap_clusters: Liquidation cluster density and distance above/below price. [tf]
 - orderbook: Order book depth (bids, asks, imbalance) by distance from mid. [tf, market]
 - cvd: Volume delta per bucket (net, buy, sell, base units) and its running total cumulative_net_volume. [tf, market, live]
 - spread_interexchange: Price spread between venues, bps (the only field naming venues). [tf, live]
@@ -215,7 +214,7 @@ FIELDS:
 
 Parameters:
 - `symbol` **(required)** (array): 1 to 10 pairs, e.g. ["BTCUSDT"].
-- `fields` **(required)** (array) — one of klines, price_change, trades_spot, trades_futures, trades_large, trades_kline_futures_seconds, oi, funding_next, funding_rate, funding_cumulative, basis, oi_change, liquidations_events, liquidations_cumulative, liquidations_big_small_ratio, heatmap_clusters, orderbook, cvd, spread_interexchange, buy_sell_ratio, trades_avg_size, trades_kline, trades_kline_spot, trades_kline_futures, tokenomics: Fields (FIELDS below).
+- `fields` **(required)** (array) — one of klines, price_change, trades_spot, trades_futures, trades_large, trades_kline_futures_seconds, oi, funding_next, funding_rate, funding_cumulative, basis, oi_change, liquidations_events, liquidations_cumulative, liquidations_big_small_ratio, orderbook, cvd, spread_interexchange, buy_sell_ratio, trades_avg_size, trades_kline, trades_kline_spot, trades_kline_futures, tokenomics: Fields (FIELDS below).
 - `limit` (integer): N latest points per series (default 1).
 - `timeframe` (string) — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d, 1w: Step of tf fields (default 1h, history: ~200 points). 1w: klines.
 - `live` (boolean): Adds the open candle (live fields).

@@ -1,6 +1,6 @@
 # Technical indicators (POST /v1/indicators)
 
-> Generated from https://api.bytnode.com/openapi.json (contract **3.0.1**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/openapi.json (contract **1.0.2**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
 POST a JSON body: `symbol`, `timeframe`, `limit` (values per indicator, 1 to 1000, default 1) and `indicators`, a list of `{id, type, <parameters flat>}` — e.g. `{"id": "rsi_14", "type": "rsi", "period": 14}`. `id` is your own name for the result (1 to 64 characters among letters, digits, `_`, `-`, `.`), unique in the call: `data.indicators` is keyed by it, and a type may appear any number of times. Parameters go FLAT in the indicator object; an unknown body field is a 422 `unknown_parameter`. Computed on the same candles as `/v1/klines/history`; `limit + warm-up` is capped at 1000 candles. Each result gives `values`: one row per candle, MOST RECENT FIRST like every list of the API — `{time, value}`, or the named outputs of a multi-output indicator (`{time, macd, signal, histogram}`). Errors on the indicators are 422 `invalid_indicator`. On a stablecoin: 200, `data: null`, `unavailable: "not_applicable"`.
 

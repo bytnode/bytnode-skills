@@ -1,10 +1,10 @@
 # Snapshot fields
 
-> Generated from https://api.bytnode.com/openapi.json (contract **3.0.1**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/openapi.json (contract **1.0.2**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
-52 fields for one symbol in a single call (41 plain, 11 multi-timeframe): prices, flow, derivatives, liquidations, macro, on-chain, options. Each query key is a field and its value a depth: `funding_rate=1` (or `=true`). Multi-timeframe fields take `@tf`: `klines@1h=24`, `cvd@1h=24`; `klines` also takes `1w`. Every field has the name of its route, and ONE type whatever the depth: a field WITHOUT a timeframe is the response of its latest-value route, an object (depth 1, or `true`; 422 `depth_too_large` above, naming its `/history` route) — except the event series `trades_spot`, `trades_futures`, `trades_kline_futures_seconds` and `liquidations_events`, always a list of their latest N rows; a field WITH `@tf` is ALWAYS a list, the latest N rows of its `/history` at that timeframe (`cvd@1h=1` is a list of one row). `max_depth` gives each ceiling. The timeframe is case-insensitive like everywhere (`cvd@1H`), except `1M`. A market field serves all markets (the route without `/spot` or `/futures`). Call it with only `symbol` to get, under `data`, `available_fields` (fields without a timeframe), `available_multi_tf_fields`, `multi_tf_syntax`, `timeframes`, `timeframes_by_field` and `max_depth`. An empty field carries `unavailable` (`not_applicable`, `no_api_key` or `no_data`) so 'no measure' is never mistaken for 'nothing happened'. Response: `symbol`, `data` (an object keyed by field name) and `is_partial` (true if a field failed: that field is then an `error` object with `code` and `message`, with the codes of the error catalogue).
+51 fields for one symbol in a single call (40 plain, 11 multi-timeframe): prices, flow, derivatives, liquidations, macro, on-chain, options. Each query key is a field and its value a depth: `funding_rate=1` (or `=true`). Multi-timeframe fields take `@tf`: `klines@1h=24`, `cvd@1h=24`; `klines` also takes `1w`. Every field has the name of its route, and ONE type whatever the depth: a field WITHOUT a timeframe is the response of its latest-value route, an object (depth 1, or `true`; 422 `depth_too_large` above, naming its `/history` route) — except the event series `trades_spot`, `trades_futures`, `trades_kline_futures_seconds` and `liquidations_events`, always a list of their latest N rows; a field WITH `@tf` is ALWAYS a list, the latest N rows of its `/history` at that timeframe (`cvd@1h=1` is a list of one row). `max_depth` gives each ceiling. The timeframe is case-insensitive like everywhere (`cvd@1H`), except `1M`. A market field serves all markets (the route without `/spot` or `/futures`). Call it with only `symbol` to get, under `data`, `available_fields` (fields without a timeframe), `available_multi_tf_fields`, `multi_tf_syntax`, `timeframes`, `timeframes_by_field` and `max_depth`. An empty field carries `unavailable` (`not_applicable`, `no_api_key` or `no_data`) so 'no measure' is never mistaken for 'nothing happened'. Response: `symbol`, `data` (an object keyed by field name) and `is_partial` (true if a field failed: that field is then an `error` object with `code` and `message`, with the codes of the error catalogue).
 
-## Fields without a timeframe (41)
+## Fields without a timeframe (40)
 
 Syntax `name=1` (or `true`); an event series takes `name=N`.
 
@@ -34,7 +34,6 @@ Syntax `name=1` (or `true`); an event series takes `name=N`.
 - `funding_next`: Next funding forecast.
 - `funding_rate`: Latest settled funding window.
 - `global`: Total crypto market cap and dominance.
-- `heatmap_clusters`: Liquidation heatmap clusters.
 - `liquidations_cumulative`: Liquidations long/short USD over the last 5 minutes (latest value).
 - `liquidations_events`: Individual liquidations (N latest events, at most your plan's count).
 - `macro_correlations`: BTC correlation with DXY, S&P 500, gold, VIX.

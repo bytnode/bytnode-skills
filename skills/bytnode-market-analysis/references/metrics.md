@@ -5,8 +5,8 @@ read it, pitfalls. Field definitions are generated in the `bytnode-api` skill
 (`references/routes.generated.md`); this file is about interpretation.
 
 ## Contents
-- Funding · Open interest · Basis · Taker flow and CVD · Liquidations · Liquidation heatmap ·
-  Order book · Inter-venue spread · Large trades · Options · Sentiment · Macro · On-chain
+- Funding · Open interest · Basis · Taker flow and CVD · Liquidations · Order book ·
+  Inter-venue spread · Large trades · Options · Sentiment · Macro · On-chain
 
 ## Funding
 - **Routes**: `/v1/funding/rate` (last settled 8 h period) and `/history`; `/v1/funding/next`
@@ -66,12 +66,6 @@ read it, pitfalls. Field definitions are generated in the `bytnode-api` skill
   many small retail liquidations. It has no long/short split: pair it with `long_usd` /
   `short_usd` of `/v1/liquidations/cumulative/history` over the same buckets.
 - **Pitfalls**: not every venue publishes liquidations: totals are a floor, not the whole market.
-
-## Liquidation heatmap
-- **Route**: `/v1/heatmap/clusters` (+ `/history`). `density_up/down` (score), `dist_up_ratio` /
-  `dist_down_ratio` (fraction of price), `attraction_* = density / dist²`.
-- **Read**: the cluster above holds estimated short liquidation levels, the one below long levels.
-  A strong, close cluster can act as a magnet. It is a model estimate, not resting orders.
 
 ## Order book
 - **Routes**: `/v1/orderbook` (+ `/spot`, `/futures`, `/history`): per bucket, the book at the END
