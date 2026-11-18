@@ -9,19 +9,18 @@ The SDKs are generated from the API contract: every route is a method, every row
 and they handle pagination, retries, rate limits and the WebSocket. **REQUIRED BACKGROUND:**
 `bytnode-api` for what the data means (units, buckets, plan windows) — the SDK does not change it.
 
-## Install — from GitHub releases, not PyPI or npm
+## Install
 
-The packages are attached to each release of https://github.com/bytnode/bytnode-SDK/releases
-(not published on PyPI/npm: `pip install bytnode` installs something else or fails). Take the
-latest version `X.Y.Z` from https://github.com/bytnode/bytnode-SDK/releases/latest (or
-`gh release view -R bytnode/bytnode-SDK`). Each release carries the Python wheel
-(`bytnode-X.Y.Z-py3-none-any.whl`), the Python sdist (`.tar.gz`) and the npm tarball (`.tgz`):
+Published on PyPI and npm under the name `bytnode`:
 
 ```bash
-pip install "bytnode[pandas] @ https://github.com/bytnode/bytnode-SDK/releases/download/vX.Y.Z/bytnode-X.Y.Z-py3-none-any.whl"
-npm install https://github.com/bytnode/bytnode-SDK/releases/download/vX.Y.Z/bytnode-X.Y.Z.tgz
+pip install "bytnode[pandas]"             # Python; drop [pandas] if you do not need DataFrames
+npm install bytnode                       # TypeScript / JavaScript
 export BYTNODE_API_KEY=cb_live_...        # the clients read it
 ```
+
+Each release of https://github.com/bytnode/bytnode-SDK/releases also carries the wheel, the sdist
+and the npm tarball, for pinned or offline installs.
 
 Python 3.10+ (sync `Bytnode` and async `AsyncBytnode`); Node 18+, Deno, Bun. If the API serves a
 newer contract than the SDK, the SDK warns once; unknown new fields are kept, never break.
@@ -133,7 +132,8 @@ TS: `npx bytnode …`.
 
 ## Common mistakes
 
-- `pip install bytnode` / `npm install bytnode` from the public registries.
+- Expecting a route newer than the SDK: if the API's contract is newer, the SDK warns once — call
+  that route through REST (or upgrade the package) instead of guessing a method name.
 - Re-implementing pagination or retries around SDK calls; retrying `RateLimitError` with `is_quota`.
 - Reading `rate_pct` as a fraction, or `volume`/`oi` as USD (the SDK keeps the API's units).
 - Calling the stream from a browser with the API key.

@@ -1,8 +1,8 @@
 # BytNode REST routes
 
-> Generated from https://api.bytnode.com/openapi.json (contract **1.0.2**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/openapi.json (contract **1.1.0**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
-138 routes. Base URL `https://api.bytnode.com`, key in `X-API-KEY`. `family` is the identifier `GET /v1/limits` lists in `families` (`null` there = every family). Search this file for a path or a field name.
+144 routes. Base URL `https://api.bytnode.com`, key in `X-API-KEY`. `family` is the identifier `GET /v1/limits` lists in `families` (`null` there = every family). Search this file for a path or a field name.
 
 ## Contents
 
@@ -19,7 +19,7 @@
 - [Bitcoin network](#bitcoin-network) (8)
 - [Ethereum](#ethereum) (16)
 - [On-chain Bitcoin](#on-chain-bitcoin) (8)
-- [Technical indicators](#technical-indicators) (1)
+- [Technical indicators](#technical-indicators) (7)
 
 ## System
 
@@ -3056,3 +3056,145 @@ JSON body: see `indicators.generated.md`.
 
 `data`: object or null.
   - `indicators` (object): One result per indicator of the request, keyed by the `id` you gave it.
+
+### GET /v1/sentiment
+
+Market sentiment of a pair. Family: `indicators`.
+
+Every sentiment indicator of the pair at the latest closed bucket, and a one-sentence `summary`.
+
+Parameters:
+- `timeframe` — one of 1h, 4h, 1d. Bucket size: `1h` (default), `4h` or `1d`.
+- `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=summary`.
+
+`data`: object or null.
+  - `summary` (string, nullable): One deterministic English sentence summarizing the most extreme facts (no language model).
+  - `indicators` (array): The indicators of the bucket, one object each, in the published order.
+
+### GET /v1/sentiment/history
+
+Sentiment indicator history. Family: `indicators`.
+
+One indicator of the pair, bucket by bucket, as it was served at the time: values are computed once per closed bucket with the data known then, and never change.
+
+Parameters:
+- `indicator` **(required)** — string. Indicator of the pair, required: `volatility`, `momentum`, `regime`, `leverage`, `oi_price`, `liquidations`, `order_flow`, `liquidity` or `fear_greed`.
+- `timeframe` — one of 1h, 4h, 1d. Bucket size: `1h` (default), `4h` or `1d`.
+- `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
+- `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
+- `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,indicator`.
+- `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
+- `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
+
+`data`: list (newest first unless `order=asc`).
+  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket of `timeframe` the value was computed on, once the bucket closed.
+  - `indicator` (string, nullable): Indicator name (see `/v1/sentiment/methodology`).
+  - `score` (number, nullable, dimensionless score): 0-100 in the indicator's own direction (see `score_meaning` in the methodology); `null` while warming up.
+  - `state` (string, nullable): The indicator's state, a frozen snake_case vocabulary; `warming_up` while the history is too short.
+  - `meaning` (string, nullable): One English sentence explaining the state, with its figures.
+  - `state_since_at` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the first bucket of the current state.
+  - `bars_in_state` (integer, nullable, count): Number of buckets in the current state, this one included.
+  - `previous_state` (number/string, nullable): The state before the last change (`null` if none known).
+  - `confidence` (string, nullable): `high`, `medium` or `low`: low when an input is missing or the score is within 3 points of a threshold, medium when the history is shorter…
+  - `drivers` (array): The 3 sub-indicators farthest from their middle (`name pNN` for percentiles, `name NN/100` for composite axes).
+  - `components` (object): Sub-indicators: each `{value, percentile?}` (percentile = rank 0-100 in the pair's own history), or a plain value for flags and labels.
+  - `inputs` (object): What the value was computed from: windows, coverage, missing parts.
+  - `history_points` (integer, nullable, count): Points of the indicator's own history used to place it (window of the timeframe).
+  - `method_version` (integer, nullable, count): Version of the published methodology; any threshold or weight change increments it.
+  - `is_closed` (boolean, nullable): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
+
+### GET /v1/sentiment/market
+
+Market sentiment. Family: `indicators`.
+
+The whole market at the latest closed bucket: `breadth` (advancers, McClellan, pairs above their averages, new highs and lows, rotation vs BTC, herding, stablecoin share, BTC dominance), `market_fear_greed` (pairs weighted by open interest 55 %, breadth 30 %, dominance 15 %) and `market_phase` (capitulation, stress, euphoria, recovery, broad rally, altcoin rotation, Bitcoin-led, quiet range, mixe…
+
+Parameters:
+- `timeframe` — one of 1h, 4h, 1d. Bucket size: `1h` (default), `4h` or `1d`.
+- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=summary`.
+
+`data`: object or null.
+  - `summary` (string, nullable): One deterministic English sentence summarizing the most extreme facts (no language model).
+  - `indicators` (array): The indicators of the bucket, one object each, in the published order.
+
+### GET /v1/sentiment/market/history
+
+Market sentiment history. Family: `indicators`.
+
+One market indicator, bucket by bucket, computed once per closed bucket.
+
+Parameters:
+- `indicator` **(required)** — string. Market indicator, required: `breadth`, `market_fear_greed` or `market_phase`.
+- `timeframe` — one of 1h, 4h, 1d. Bucket size: `1h` (default), `4h` or `1d`.
+- `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
+- `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
+- `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,indicator`.
+- `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
+- `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
+
+`data`: list (newest first unless `order=asc`).
+  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket of `timeframe` the value was computed on, once the bucket closed.
+  - `indicator` (string, nullable): Indicator name (see `/v1/sentiment/methodology`).
+  - `score` (number, nullable, dimensionless score): 0-100 in the indicator's own direction (see `score_meaning` in the methodology); `null` while warming up.
+  - `state` (string, nullable): The indicator's state, a frozen snake_case vocabulary; `warming_up` while the history is too short.
+  - `meaning` (string, nullable): One English sentence explaining the state, with its figures.
+  - `state_since_at` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the first bucket of the current state.
+  - `bars_in_state` (integer, nullable, count): Number of buckets in the current state, this one included.
+  - `previous_state` (number/string, nullable): The state before the last change (`null` if none known).
+  - `confidence` (string, nullable): `high`, `medium` or `low`: low when an input is missing or the score is within 3 points of a threshold, medium when the history is shorter…
+  - `drivers` (array): The 3 sub-indicators farthest from their middle (`name pNN` for percentiles, `name NN/100` for composite axes).
+  - `components` (object): Sub-indicators: each `{value, percentile?}` (percentile = rank 0-100 in the pair's own history), or a plain value for flags and labels.
+  - `inputs` (object): What the value was computed from: windows, coverage, missing parts.
+  - `history_points` (integer, nullable, count): Points of the indicator's own history used to place it (window of the timeframe).
+  - `method_version` (integer, nullable, count): Version of the published methodology; any threshold or weight change increments it.
+  - `is_closed` (boolean, nullable): `true` = the row is final; `false` = provisional: the latest bucket while it still settles (a few seconds after its end, e.g. a candle whos…
+
+### GET /v1/sentiment/methodology
+
+Sentiment methodology. Family: `indicators`.
+
+The published methodology: principles (own-history percentiles, windows, states with hysteresis, frozen values, confidence), and for every indicator its inputs, sub-indicators, score, weights and the entry and stay rule of each state, by priority.
+
+Parameters:
+- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=method_version`.
+
+`data`: object or null.
+  - `method_version` (integer, nullable, count): Version of the methodology; served with every value.
+  - `principles` (array): How every indicator is computed: one `{topic, text}` per principle.
+  - `windows` (array): History window and minimum points of each timeframe.
+  - `fear_greed_bands` (array): The five Fear & Greed bands: `{state, min_score, max_score}`.
+  - `indicators` (array): One object per indicator, in the published order.
+
+### GET /v1/sentiment/screener
+
+Pairs by sentiment. Family: `indicators`.
+
+Every pair's value of one indicator at the latest closed bucket, highest score first; `state` keeps the pairs in that state ("which pairs have overheated leverage?": `indicator=leverage&state=overheated_longs`).
+
+Parameters:
+- `indicator` **(required)** — string. Indicator of the pair, required: `volatility`, `momentum`, `regime`, `leverage`, `oi_price`, `liquidations`, `order_flow`, `liquidity` or `fear_greed`.
+- `timeframe` — one of 1h, 4h, 1d. Bucket size: `1h` (default), `4h` or `1d`.
+- `state` — string. Keep only the pairs in this state (e.g. `overheated_longs` for `leverage`); the states of each indicator: `/v1/sentiment/methodology`.
+- `limit` — integer (min 1, max 200) — default `100`. Number of pairs to return, 1 to 200 (default 100), highest score first.
+- `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,symbol`.
+
+`data`: list (newest first unless `order=asc`).
+  - `time` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the bucket of `timeframe` the value was computed on, once the bucket closed.
+  - `symbol` (string, nullable): Trading pair.
+  - `indicator` (string, nullable): Indicator name (see `/v1/sentiment/methodology`).
+  - `score` (number, nullable, dimensionless score): 0-100 in the indicator's own direction (see `score_meaning` in the methodology); `null` while warming up.
+  - `state` (string, nullable): The indicator's state, a frozen snake_case vocabulary; `warming_up` while the history is too short.
+  - `meaning` (string, nullable): One English sentence explaining the state, with its figures.
+  - `state_since_at` (string, nullable, ISO 8601 UTC, milliseconds (2026-09-28T14:00:00.000Z)): Start of the first bucket of the current state.
+  - `bars_in_state` (integer, nullable, count): Number of buckets in the current state, this one included.
+  - `previous_state` (string, nullable): The state before the last change (`null` if none known).
+  - `confidence` (string, nullable): `high`, `medium` or `low`: low when an input is missing or the score is within 3 points of a threshold, medium when the history is shorter…
+  - `drivers` (array): The 3 sub-indicators farthest from their middle (`name pNN` for percentiles, `name NN/100` for composite axes).
+  - `components` (object): Sub-indicators: each `{value, percentile?}` (percentile = rank 0-100 in the pair's own history), or a plain value for flags and labels.
+  - `inputs` (object): What the value was computed from: windows, coverage, missing parts.
+  - `history_points` (integer, nullable, count): Points of the indicator's own history used to place it (window of the timeframe).
+  - `method_version` (integer, nullable, count): Version of the published methodology; any threshold or weight change increments it.

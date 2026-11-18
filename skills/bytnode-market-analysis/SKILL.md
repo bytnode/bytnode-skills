@@ -32,7 +32,7 @@ break analyses most often are repeated here.
    `/v1/snapshot` on REST (Traders+); otherwise the individual routes.
 3. **Normalise**: units → percent / USD, every figure with its time.
 4. **Compare with a baseline**: the same metric's own history (7–30 days via `/history` or MCP
-   `summary`), and other pairs (`rank_pairs`). A level means little alone; a change or an
+   `summary`; MCP `context=true` gives the percentile directly), and other pairs (`rank_pairs`). A level means little alone; a change or an
    extreme relative to its history means something.
 5. **Combine** signals (positioning + flow + price), note agreements and contradictions.
 6. **Report** in the format below, including what is missing.
@@ -53,6 +53,7 @@ break analyses most often are repeated here.
 | Fear & Greed (`value` 0–100, `label`) | 50 | `extreme_fear` … `extreme_greed`; contrarian at extremes |
 | Altcoin Season (`value` 0–100) | — | ≥ 75 altcoin season, ≤ 25 bitcoin season |
 | Macro risk (`score`, `label`) | 50 | share of risk-on signals; check `oldest_input_date` |
+| Computed sentiment (`/v1/sentiment*`, MCP `get_market_sentiment`: `score` 0–100, `state`, `meaning`) | 50 | BytNode's own reading of a pair (volatility, momentum, regime, leverage, order flow…) or of the market (breadth, `market_phase`); quote the `state` and its `meaning`, then check it against the raw metrics — it summarises them, it does not replace them |
 
 Reference levels are rules of thumb, not BytNode definitions: present them as such.
 
@@ -96,7 +97,8 @@ candle close differ by a few basis points and seconds. Quote the one that matche
 - **Market regime**: total market cap and BTC dominance (`/v1/global`), fear & greed (both
   indices), altcoin season, macro risk and net liquidity trend, BTC options IV and put/call.
 - **Screening**: `rank_pairs` on `funding_next`, `oi_usd`, `volume_usd_24h`, `price_change_pct`,
-  `rsi` — then drill into the outliers.
+  `rsi`, or a sentiment score (`leverage` + `state=overheated_longs`; REST `/v1/sentiment/screener`)
+  — then drill into the outliers.
 
 ## Common mistakes
 

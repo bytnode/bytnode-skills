@@ -1,25 +1,28 @@
 # BytNode MCP tools
 
-> Generated from https://api.bytnode.com/.well-known/mcp/server-card.json (MCP surface **1.0.2**, REST contract 1.0.2) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/.well-known/mcp/server-card.json (MCP surface **1.2.0**, REST contract 1.1.0) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
 Endpoint: `https://api.bytnode.com/mcp` (Streamable HTTP). Auth: `X-API-KEY` header or `Authorization: Bearer <key>`; connectors (claude.ai, ChatGPT, Claude Code) sign in with OAuth instead.
 
 ## Server instructions (sent to the model at connection)
 
-BytNode MCP 1.0.2: crypto market data aggregated across the major spot and perpetual venues (never named, except spread_interexchange and the liquidations): pairs, options, spot ETFs, macro, on-chain, sentiment. Every response carries mcp_version: if it differs from 1.0.2, your client holds older tool definitions (reconnect it).
+BytNode MCP 1.2.0: crypto market data aggregated across the major spot and perpetual venues (never named, except spread_interexchange and the liquidations): pairs, options, spot ETFs, macro, on-chain, sentiment. Every response carries mcp_version: if it differs from 1.2.0, your client holds older tool definitions (reconnect it).
 
 READ FIRST
 - Units: _pct = percent (58.5 = 58.5 %), _ratio = fraction (0.585 = 58.5 %), _bps, _usd, _s, _count. Prices in the quote currency, quantities in base units; oi_usd = oi x close. describe_fields gives the unit of every column and the thresholds of every label.
 - Time: ISO 8601 UTC; a row is dated at the START of its bucket (ranges.to too); a current value is the last CLOSED bucket. Rows come newest first. A regular series ALWAYS gives first_time and step_s, whatever its row count (row i = first_time + i x step_s); events (trades, liquidation events) and tables keep a time column, a block `date` (rows give HH:MM:SS) or one `time` (every row at that instant).
 - The get_* tools and rank_pairs answer {mode, data, ...}: data has one key per series; an empty or not applicable series is null, and unavailable says why.
 - summary, per series, on the WHOLE series: latest, oldest, min/max with their time, mean, sum and `sums` (flows), by_side (trades, liquidation events) or change (states); candles add high_max/low_min. For a total, an extreme or a change read summary, not the rows; detail="summary" keeps one row per series.
+- context (always in get_pair_brief; context=true elsewhere): per series {value, percentile 0-100 within its own recent history, z, n, window, vs}; unavailable: warming (ready on a later call), history_too_short, stale_feed, not_covered. A place in its own history, NOT a signal.
 - ranges: what is really covered (row_count of total_row_count, from, to, note). Never conclude on a period without it. unavailable: not_applicable, no_api_key (not collected: NOT a market fact), no_data. warnings: a late feed (never present it as current) or an ignored parameter. freshness.age_s = age of the source feed, not of the row.
 
 MODES: no window = current value (limit=N: the N latest points). since_ms/until_ms (epoch ms, ISO date or '48h' ago) or last='48h' = history, closed buckets only (last='24h': 24 buckets; since_ms='24h': the 23 after it). Without timeframe the server picks about 200 points. FIELDS tags: tf = takes timeframe; now = no dated history; live = live=true adds the open candle; N<=x = max limit (else 1000); a parameter name = only these fields take it. Several fields per call; with several pairs every key is '<pair>/<field>'.
 
 SIZE: 6,000 estimated tokens by default, max_tokens up to 16,000. Beyond it series keep their newest rows and ranges.<key>.missing (several pairs: missing.<field>; ranges, omitted_columns identical for every pair are written once, under '<field>') says how to get the rest, often the max_tokens that fits; read_export(export_id, key, offset) pages the full data (one hour, same key).
 
-PLANS: every plan works but reads only its own data (get_system_info). Free has no snapshot family: ask last='1h' instead of current values. Outside the plan: 403 plan_family or history_depth. api_requests = quota requests used by the call.
+SENTIMENT: get_market_sentiment gives computed states (score, state, one-sentence meaning) per pair and for the market, frozen per closed 1h/4h/1d bucket.
+
+PLANS: every plan works but reads only its own data (get_system_info). Free has no snapshot family: ask last='1h' instead of current values. Outside the plan: 403 plan_family or history_depth. api_requests = quota requests used by the call. dry_run=true: its cost and your remaining quota, no data, free; max_quota_cost=N refuses a call above N requests before any request.
 
 ERRORS: isError=true, text "Error (HTTP NNN): ...", structuredContent.error {status, code, message, param?, hint?, retry_after_s?}; wrong_tool: hint names the right tool; 429: retry after the delay. Every code: resource bytnode://schemas/error. Field definitions: describe_fields (free).
 
@@ -27,7 +30,7 @@ ERRORS: isError=true, text "Error (HTTP NNN): ...", structuredContent.error {sta
 
 ### `describe_fields`
 
-Full definition of data-tool fields, and of the output keys liquidations_24h, oi_usd, cumulative_net_volume, ranking: columns, unit of each column, label thresholds, dating, tool, timeframes, history depth, extra parameters. Free, no quota.
+Full definition of data-tool fields, and of the output keys liquidations_24h, oi_usd, cumulative_net_volume, ranking, context: columns, unit of each column, label thresholds, dating, tool, timeframes, history depth, extra parameters. Free, no quota.
 
 Parameters:
 - `fields` **(required)** (array): Field names.
@@ -56,6 +59,8 @@ Parameters:
 - `last` (string): History over the last '48h' / '30d' (whole buckets).
 - `columns` (array): Columns to keep, e.g. ["close", "volume"].
 - `detail` (string) — one of compact, full, summary: summary: one row per series + summary; full: every column.
+- `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
+- `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 - `max_tokens` (integer): Response budget, estimated tokens (default 6000).
 
 ### `get_market_indicators`
@@ -70,6 +75,8 @@ Parameters:
 - `timeframe` **(required)** (string) — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d, 1w: Candle step.
 - `indicators` **(required)** (array): {id (your unique name), type, ...its own optional parameters, flat}. Defaults: rsi(period=14), ema(period=20), sma(period=20), bb(period=20, std=2.0), atr(period=14), stoch(k=14, d=3, smooth=3), macd(fast=12, slow=26, signal=9), obv(), ad(), adx(period=14), cci(period=20), willr(period=14), mfi(period=14), roc(period=10), donchian(period=20), adosc(fast=3, slow=10), sar(acceleration=0.02, maximum=0.2), keltner(period=20, multiplier=2.0), ichimoku(tenkan=9, kijun=26, senkou=52).
 - `limit` (integer): N latest values (default 1).
+- `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
+- `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 - `max_tokens` (integer): Response budget, estimated tokens (default 6000).
 
 ### `get_market_overview`
@@ -95,6 +102,26 @@ Parameters:
 - `last` (string): History over the last '48h' / '30d' (whole buckets).
 - `columns` (array): Columns to keep, e.g. ["close", "volume"].
 - `detail` (string) — one of compact, full, summary: summary: one row per series + summary; full: every column.
+- `context` (boolean): Adds `context`: where each series' latest value sits in its own recent history (percentile, z, n, window). Not a signal; no quota.
+- `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
+- `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
+- `max_tokens` (integer): Response budget, estimated tokens (default 6000).
+
+### `get_market_sentiment`
+
+Computed market sentiment: per pair (volatility, momentum, regime, leverage, oi_price, liquidations, order_flow, liquidity, fear_greed) or, without symbol, the whole market (breadth, market_fear_greed, market_phase). Each value: score 0-100, state (frozen vocabulary), meaning (one sentence with its figures), confidence, drivers, state_since_at; detail=full adds components (sub-indicators with their percentile in the pair's own history). data.summary: one deterministic sentence. Values are computed once per CLOSED 1h/4h/1d bucket and never change; since_ms/last = history of the named indicators. Formulas, weights and every state rule: the REST route /v1/sentiment/methodology. One quota request per pair (or for the market); a history: one per pair x indicator.
+
+Parameters:
+- `symbol` (array): 1 to 10 pairs; omit for the whole market.
+- `timeframe` (string) — one of 1h, 4h, 1d: Bucket step.
+- `indicators` (array): Indicators to keep (default all); required names for a history.
+- `since_ms` (string): History start: epoch ms, ISO date or '48h' ago.
+- `until_ms` (string): History end.
+- `last` (string): History over the last '48h' / '30d' (whole buckets).
+- `limit` (integer): History rows per series.
+- `detail` (string) — one of summary, full: summary: score, state, meaning, confidence, drivers; full: + components.
+- `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
+- `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 - `max_tokens` (integer): Response budget, estimated tokens (default 6000).
 
 ### `get_onchain_data`
@@ -131,6 +158,8 @@ Parameters:
 - `dataset` (string) — one of concentration, rewards, difficulty, fee_rates: btc_mining history (default concentration).
 - `columns` (array): Columns to keep, e.g. ["close", "volume"].
 - `detail` (string) — one of compact, full, summary: summary: one row per series + summary; full: every column.
+- `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
+- `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 - `max_tokens` (integer): Response budget, estimated tokens (default 6000).
 
 ### `get_options_data`
@@ -168,14 +197,20 @@ Parameters:
 - `ticker` (string): ETF issuer (IBIT) of etf_fundamentals.
 - `columns` (array): Columns to keep, e.g. ["close", "volume"].
 - `detail` (string) — one of compact, full, summary: summary: one row per series + summary; full: every column.
+- `context` (boolean): Adds `context`: where each series' latest value sits in its own recent history (percentile, z, n, window). Not a signal; no quota.
+- `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
+- `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 - `max_tokens` (integer): Response budget, estimated tokens (default 6000).
 
 ### `get_pair_brief`
 
-The state of 1 to 10 pairs in ONE call, fixed shape: price_change, funding_next, the latest basis, oi (with oi_usd) and cvd of the last closed 1h bucket, liquidations_24h {from, to (start of the first and of the last 1h bucket), long_usd, short_usd, total_usd, bucket_count} and fear_greed (Financial plan). About one quota request per pair, plus one. Anything else: get_pair_data.
+The state of 1 to 10 pairs in ONE call, fixed shape: price_change, funding_next, the latest basis, oi (with oi_usd) and cvd of the last closed 1h bucket, liquidations_24h {from, to (start of the first and of the last 1h bucket), long_usd, short_usd, total_usd, bucket_count} and fear_greed (Financial plan), with `context`: where each value sits in its own recent history. Two quota requests per pair, plus one; sentiment=true adds the pair's fear_greed, leverage and volatility states (one more per pair). Anything else: get_pair_data.
 
 Parameters:
 - `symbol` **(required)** (array): 1 to 10 pairs, e.g. ["BTCUSDT"].
+- `sentiment` (boolean): Adds `sentiment`: fear_greed, leverage and volatility (score, state, meaning) of the last closed 1h bucket. One more quota request per pair.
+- `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
+- `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 
 ### `get_pair_data`
 
@@ -225,6 +260,9 @@ Parameters:
 - `market` (string) — one of all, spot, futures: Of cvd, buy_sell_ratio, trades_avg_size, orderbook.
 - `columns` (array): Columns to keep, e.g. ["close", "volume"].
 - `detail` (string) — one of compact, full, summary: summary: one row per series + summary; full: every column.
+- `context` (boolean): Adds `context`: where each series' latest value sits in its own recent history (percentile, z, n, window). Not a signal; no quota.
+- `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
+- `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 - `max_tokens` (integer): Response budget, estimated tokens (default 6000).
 
 ### `get_system_info`
@@ -241,14 +279,17 @@ Parameters:
 
 ### `rank_pairs`
 
-Every pair ranked by ONE metric, top `limit`, ONE quota request: oi_usd, volume_usd_24h (spot + futures, last 24 closed hours, USD), funding_next (next estimated funding: estimated_rate_pct, 8h rate in %, and apr_pct), price_change_pct (over `window`, default 1d), rsi (RSI 14, last closed candle of `timeframe`, default 4h). Values at most 60 s old; pairs without the metric are in `excluded`. Example, most negative funding: metric=funding_next, order=asc
+Every pair ranked by ONE metric, top `limit`, ONE quota request: oi_usd, volume_usd_24h (spot + futures, last 24 closed hours, USD), funding_next (next estimated funding: estimated_rate_pct, 8h rate in %, and apr_pct), price_change_pct (over `window`, default 1d), rsi (RSI 14, last closed candle of `timeframe`, default 4h), and the sentiment scores fear_greed, leverage, volatility, momentum (last closed bucket of `timeframe`, default 1h; `state` keeps one state, e.g. leverage + overheated_longs). Values at most 60 s old; pairs without the metric are in `excluded`. Example, most negative funding: metric=funding_next, order=asc
 
 Parameters:
-- `metric` **(required)** (string) — one of oi_usd, volume_usd_24h, funding_next, price_change_pct, rsi: Metric.
+- `metric` **(required)** (string) — one of oi_usd, volume_usd_24h, funding_next, price_change_pct, rsi, fear_greed, leverage, volatility, momentum: Metric.
 - `order` (string) — one of desc, asc: desc = largest first.
 - `limit` (integer): Pairs returned.
 - `window` (string) — one of 1h, 4h, 1d, 1w: price_change_pct only (default 1d).
-- `timeframe` (string) — one of 1h, 4h, 1d: rsi only (default 4h).
+- `timeframe` (string) — one of 1h, 4h, 1d: rsi (default 4h) or a sentiment metric (default 1h).
+- `state` (string): Sentiment metrics only: keep the pairs in this state.
+- `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
+- `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 - `max_tokens` (integer): Response budget, estimated tokens (default 6000).
 
 ### `read_export`

@@ -166,6 +166,10 @@ All codes: `references/errors.generated.md`. Responses with a metered key carry 
   `(limit + warm-up) × timeframe` must fit it (Free's 1-hour `1m` window cannot hold an RSI 14,
   whose warm-up is 70 candles — use `5m` or `1h`). Types, warm-ups and parameters:
   `references/indicators.generated.md`.
+- `GET /v1/sentiment?symbol=…` (pair) and `/v1/sentiment/market` — computed sentiment states
+  (score 0–100, `state`, one-sentence `meaning`), frozen per closed 1h/4h/1d bucket and never
+  revised; `/history` for the past, `/screener` to filter every pair by one state,
+  `/methodology` for the formulas. Family `indicators`, so every plan.
 
 ## Common mistakes
 

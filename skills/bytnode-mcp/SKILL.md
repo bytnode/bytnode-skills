@@ -1,12 +1,12 @@
 ---
 name: bytnode-mcp
-description: Use when answering crypto market questions through the BytNode MCP server (tools such as get_pair_brief, get_pair_data, get_options_data, get_market_overview, get_macro_data, get_onchain_data, get_market_indicators, rank_pairs, read_export, get_system_info, describe_fields), when connecting that server to Claude, ChatGPT, Cursor or another MCP client, or when a BytNode MCP call fails, is cut by its token budget, or is refused for the plan (plan_family, history_depth, wrong_tool).
+description: Use when answering crypto market questions through the BytNode MCP server (tools such as get_pair_brief, get_pair_data, get_market_sentiment, get_options_data, get_market_overview, get_macro_data, get_onchain_data, get_market_indicators, rank_pairs, read_export, get_system_info, describe_fields), when connecting that server to Claude, ChatGPT, Cursor or another MCP client, or when a BytNode MCP call fails, is cut by its token budget, or is refused for the plan (plan_family, history_depth, wrong_tool).
 ---
 
 # Using the BytNode MCP server
 
 The MCP server (`https://api.bytnode.com/mcp`, Streamable HTTP, read-only) exposes BytNode's
-market data to agents through 11 tools. Each data call becomes REST requests made with the
+market data to agents through 12 tools. Each data call becomes REST requests made with the
 user's own key, so the user's plan applies. Full tool definitions, parameters and the server's own
 instructions: `references/tools.generated.md`.
 
@@ -48,9 +48,10 @@ the history window per timeframe and the rate/quota left. Decide from it, not fr
 
 | Question about… | Tool | Notes |
 |---|---|---|
-| the state of 1–10 pairs, fast | `get_pair_brief` | fixed shape: price change, next funding, basis, OI (+`oi_usd`), last 1h CVD, 24 h liquidations, fear & greed. Not on Free. |
+| the state of 1–10 pairs, fast | `get_pair_brief` | fixed shape: price change, next funding, basis, OI (+`oi_usd`), last 1h CVD, 24 h liquidations, fear & greed, with `context` (each value's percentile in its own history); `sentiment=true` adds the pair's fear_greed, leverage and volatility states. Not on Free. |
 | anything else on a pair (candles, trades, order flow, funding, OI, liquidations, tokenomics) | `get_pair_data` | `symbol` + `fields`; up to 10 pairs, keys become `PAIR/field` |
-| comparing all pairs on one metric | `rank_pairs` | `oi_usd`, `volume_usd_24h`, `funding_next`, `price_change_pct`, `rsi`: ONE quota request for all pairs; `limit` default 10, max 100; works on every plan (it uses the derivatives / price / indicators routes) |
+| computed sentiment of a pair or of the whole market (volatility, momentum, regime, leverage, order flow, fear & greed, breadth, market phase) | `get_market_sentiment` | score 0–100 + `state` + one-sentence `meaning`, frozen per closed 1h/4h/1d bucket; omit `symbol` for the market; every plan (family `indicators`) |
+| comparing all pairs on one metric | `rank_pairs` | `oi_usd`, `volume_usd_24h`, `funding_next`, `price_change_pct`, `rsi`, and the sentiment scores `fear_greed`, `leverage`, `volatility`, `momentum` (`state=` keeps one state, e.g. `overheated_longs`): ONE quota request for all pairs; `limit` default 10, max 100; works on every plan (it uses the derivatives / price / indicators routes) |
 | BTC or ETH options, spot ETFs | `get_options_data` | `asset` (BTC/ETH, never a pair); `expiries=true` for per-expiry detail |
 | whole market: cap, dominance, fear & greed, altcoin season, CMC20/100 | `get_market_overview` | no target |
 | US macro, net liquidity, risk-on/off | `get_macro_data` | series catalogue via `get_system_info(catalogs=["macro_series"])` |
@@ -70,6 +71,11 @@ A field asked from the wrong tool is refused with `wrong_tool` and a `hint` nami
   for totals and extremes. `detail`, `columns`, `timeframe` and the window apply to every field
   of the call; split the call when fields need different settings.
 - `columns=[…]` keeps only the columns you need; `max_tokens` (default 6,000, up to 16,000).
+- `context=true` adds, per series, where the latest value sits in its own recent history
+  (`percentile` 0–100, `z`, `n`, `window`) — the baseline an analysis needs, free of quota. It is
+  a position, not a signal; `unavailable: warming` means ask again later.
+- `dry_run=true` returns the call's quota cost and what is left, without data and for free;
+  `max_quota_cost=N` refuses a call that would cost more. Use them before a large multi-pair history.
 
 ## Reading a response
 

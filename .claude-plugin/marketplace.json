@@ -10,7 +10,7 @@
       "name": "bytnode",
       "source": "./",
       "description": "Skills that teach AI agents to use BytNode, the crypto market-data API.",
-      "version": "1.0.0"
+      "version": "1.1.0"
     }
   ]
 }
