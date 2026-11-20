@@ -1,6 +1,6 @@
 # BytNode error codes
 
-> Generated from https://api.bytnode.com/openapi.json (contract **1.1.0**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/openapi.json (contract **1.1.2**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
 Every error is `{status: "error", server_time, error: {code, message, param?, details?}}` (the WebSocket sends the same object under `op: "error"`). Branch on `error.code`; show `error.message`; read `error.details` (`suggestion`, `accepted`, `retry_after_s`, `window_s`, `earliest_ms`, `max_limit`…) for what to change. A code not listed here is a newer one: treat it as a generic error.
 
@@ -8,6 +8,7 @@ Every error is `{status: "error", server_time, error: {code, message, param?, de
 
 - `depth_too_large`: A depth (snapshot field, WebSocket order book channel) exceeds its documented maximum.
 - `edge_rate_limited`: Too many requests from this IP address at the edge (anti-flood: 20 per second per address, bursts of 40). Retry after 1 second.
+- `exchange_not_covered`: None of the venues listed in `exchanges` carries this data (the family is not collected there, or the venue does not list the symbol on this market). The error lists the accepted venues.
 - `history_depth`: The requested history goes further back than your plan allows.
 - `https_required`: Plain HTTP is refused: call the same URL over https://. A key sent over http:// travelled unencrypted: rotate it.
 - `insufficient_data`: Not enough history to compute the requested indicator.

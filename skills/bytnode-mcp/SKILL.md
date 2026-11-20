@@ -1,13 +1,14 @@
 ---
 name: bytnode-mcp
-description: Use when answering crypto market questions through the BytNode MCP server (tools such as get_pair_brief, get_pair_data, get_market_sentiment, get_options_data, get_market_overview, get_macro_data, get_onchain_data, get_market_indicators, rank_pairs, read_export, get_system_info, describe_fields), when connecting that server to Claude, ChatGPT, Cursor or another MCP client, or when a BytNode MCP call fails, is cut by its token budget, or is refused for the plan (plan_family, history_depth, wrong_tool).
+description: Use when answering crypto market questions through the BytNode MCP server (tools such as get_pair_brief, get_pair_data, get_market_sentiment, get_options_data, get_market_overview, get_macro_data, get_onchain_data, get_market_indicators, rank_pairs, read_export, get_system_info, describe_fields, and the real-time get_live_data, get_market_snapshot, get_stream_status, create_alert, list_alerts, delete_alert), when connecting that server to Claude, ChatGPT, Cursor or another MCP client, or when a BytNode MCP call fails, is cut by its token budget, or is refused for the plan (plan_family, history_depth, wrong_tool).
 ---
 
 # Using the BytNode MCP server
 
-The MCP server (`https://api.bytnode.com/mcp`, Streamable HTTP, read-only) exposes BytNode's
-market data to agents through 12 tools. Each data call becomes REST requests made with the
-user's own key, so the user's plan applies. Full tool definitions, parameters and the server's own
+The MCP server (`https://api.bytnode.com/mcp`, Streamable HTTP) exposes BytNode's market data to
+agents through 18 tools: twelve read the market data (each data call becomes REST requests made
+with the user's own key, so the user's plan applies), six read the real-time stream and manage
+server-side alerts (see "Live data and alerts"). Full tool definitions, parameters and the server's own
 instructions: `references/tools.generated.md`.
 
 ## Connecting
@@ -59,8 +60,29 @@ the history window per timeframe and the rate/quota left. Decide from it, not fr
 | RSI, MACD, Bollinger… (19 types) | `get_market_indicators` | `indicators=[{"id","type",…}]`, up to 50 |
 | the unit or meaning of a field | `describe_fields` | free, no quota |
 | the rest of a cut response | `read_export` | free, same key, export lives 1 hour |
+| what is trading right now on one pair (flow, book, liquidations over the last seconds) | `get_live_data` | real-time stream, `window_seconds` 1–60; plans with WebSocket access |
+| a live look at several pairs at once | `get_market_snapshot` | up to 10 pairs, last 5 seconds |
+| "tell me when BTC reaches X" | `create_alert` | then `list_alerts` / `delete_alert`; see below |
 
 A field asked from the wrong tool is refused with `wrong_tool` and a `hint` naming the right one.
+
+## Live data and alerts
+
+- These six tools come with plans that include WebSocket access; on other plans they answer
+  `403 plan_websocket` (`list_alerts` and `delete_alert` stay open). They use no quota. Reading
+  live data holds one WebSocket connection of the plan per API key, closed after 5 minutes idle.
+- `get_live_data(pair, market="futures", window_seconds=10)` returns a summary, never the raw
+  feed: `trades` (`net_flow_usd` = aggressive delta, `vwap`, `change_pct`, largest trades),
+  `book` (consolidated `mid_price`, `spread_bps`, depth per side, `bid_ratio` > 0.5 = more bids),
+  `liquidations` (futures).
+- `create_alert(pair, condition, value, notify=…)`: `price_above` / `price_below` (a price),
+  `change_pct` (+5 / -5 % within `window_minutes`), `liquidations` (USD within `window_minutes`,
+  `side` long/short), `big_trade` (USD of one trade, `side` buy/sell). Fires once, keeps
+  watching after the agent leaves; 5 / 50 / 500 active alerts by plan.
+- `notify="wait"` holds the call until it fires (up to `wait_seconds`, 600 max); if it returns
+  `status: active` with `waiting`, call `list_alerts(alert_id=…, wait=true)` to keep waiting.
+  `notify="webhook"` POSTs signed JSON to an HTTPS URL (secret shown once). `notify="mcp"` only
+  works for clients that keep a notification stream open; most do not, and it is refused.
 
 ## Modes of a data tool
 

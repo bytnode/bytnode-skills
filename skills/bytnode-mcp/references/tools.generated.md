@@ -1,24 +1,26 @@
 # BytNode MCP tools
 
-> Generated from https://api.bytnode.com/.well-known/mcp/server-card.json (MCP surface **1.2.0**, REST contract 1.1.0) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/.well-known/mcp/server-card.json (MCP surface **1.3.0**, REST contract 1.1.2) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
 Endpoint: `https://api.bytnode.com/mcp` (Streamable HTTP). Auth: `X-API-KEY` header or `Authorization: Bearer <key>`; connectors (claude.ai, ChatGPT, Claude Code) sign in with OAuth instead.
 
 ## Server instructions (sent to the model at connection)
 
-BytNode MCP 1.2.0: crypto market data aggregated across the major spot and perpetual venues (never named, except spread_interexchange and the liquidations): pairs, options, spot ETFs, macro, on-chain, sentiment. Every response carries mcp_version: if it differs from 1.2.0, your client holds older tool definitions (reconnect it).
+BytNode MCP 1.3.0: crypto market data aggregated across the major spot and perpetual venues (get_pair_data `exchanges` restricts a series to the venues listed): pairs, options, spot ETFs (get_options_data: quarterly holdings, no daily flows), macro, on-chain, sentiment. Every response carries mcp_version: if it differs from 1.3.0, your client holds older tool definitions (reconnect it).
 
 READ FIRST
 - Units: _pct = percent (58.5 = 58.5 %), _ratio = fraction (0.585 = 58.5 %), _bps, _usd, _s, _count. Prices in the quote currency, quantities in base units; oi_usd = oi x close. describe_fields gives the unit of every column and the thresholds of every label.
 - Time: ISO 8601 UTC; a row is dated at the START of its bucket (ranges.to too); a current value is the last CLOSED bucket. Rows come newest first. A regular series ALWAYS gives first_time and step_s, whatever its row count (row i = first_time + i x step_s); events (trades, liquidation events) and tables keep a time column, a block `date` (rows give HH:MM:SS) or one `time` (every row at that instant).
 - The get_* tools and rank_pairs answer {mode, data, ...}: data has one key per series; an empty or not applicable series is null, and unavailable says why.
 - summary, per series, on the WHOLE series: latest, oldest, min/max with their time, mean, sum and `sums` (flows), by_side (trades, liquidation events) or change (states); candles add high_max/low_min. For a total, an extreme or a change read summary, not the rows; detail="summary" keeps one row per series.
-- context (always in get_pair_brief; context=true elsewhere): per series {value, percentile 0-100 within its own recent history, z, n, window, vs}; unavailable: warming (ready on a later call), history_too_short, stale_feed, not_covered. A place in its own history, NOT a signal.
+- context (always in get_pair_brief; context=true on get_pair_data, get_options_data and get_market_overview only): per series {value, percentile 0-100 within its own recent history, z, n, window, vs}; unavailable: warming (ready on a later call), history_too_short, stale_feed, not_covered. A place in its own history, NOT a signal.
 - ranges: what is really covered (row_count of total_row_count, from, to, note). Never conclude on a period without it. unavailable: not_applicable, no_api_key (not collected: NOT a market fact), no_data. warnings: a late feed (never present it as current) or an ignored parameter. freshness.age_s = age of the source feed, not of the row.
 
 MODES: no window = current value (limit=N: the N latest points). since_ms/until_ms (epoch ms, ISO date or '48h' ago) or last='48h' = history, closed buckets only (last='24h': 24 buckets; since_ms='24h': the 23 after it). Without timeframe the server picks about 200 points. FIELDS tags: tf = takes timeframe; now = no dated history; live = live=true adds the open candle; N<=x = max limit (else 1000); a parameter name = only these fields take it. Several fields per call; with several pairs every key is '<pair>/<field>'.
 
 SIZE: 6,000 estimated tokens by default, max_tokens up to 16,000. Beyond it series keep their newest rows and ranges.<key>.missing (several pairs: missing.<field>; ranges, omitted_columns identical for every pair are written once, under '<field>') says how to get the rest, often the max_tokens that fits; read_export(export_id, key, offset) pages the full data (one hour, same key).
+
+LIVE (plans with WebSocket): get_live_data, get_market_snapshot, create_alert/list_alerts (notify=wait or webhook).
 
 SENTIMENT: get_market_sentiment gives computed states (score, state, one-sentence meaning) per pair and for the market, frozen per closed 1h/4h/1d bucket.
 
@@ -28,12 +30,45 @@ ERRORS: isError=true, text "Error (HTTP NNN): ...", structuredContent.error {sta
 
 ## Tools
 
+### `create_alert`
+
+Server-side alert on the live stream; fires once, keeps watching after you leave. value: a price (price_above/below), a % within window_minutes (change_pct: +5 rise, -5 fall), USD liquidated within window_minutes (liquidations), USD of one trade (big_trade). notify: 'wait' holds the call until it fires or wait_seconds pass (then list_alerts(alert_id, wait=true)); 'webhook' POSTs signed JSON to an HTTPS URL (secret shown once); 'mcp' only if your client keeps a notification stream. Limit 5/50/500 by plan.
+
+Parameters:
+- `pair` **(required)** (string): Pair, e.g. BTCUSDT.
+- `condition` **(required)** (string) — one of price_above, price_below, change_pct, liquidations, big_trade
+- `value` **(required)** (number)
+- `notify` (string) — one of wait, webhook, mcp
+- `market` (string) — one of futures, spot: 'futures' (perpetual, default) or 'spot'.
+- `window_minutes` (integer): 1-240, default 60.
+- `side` (string) — one of long, short, buy, sell: liquidations: long|short; big_trade: buy|sell.
+- `webhook_url` (string)
+- `wait_seconds` (integer)
+- `expires_in_hours` (integer)
+- `note` (string)
+
+### `delete_alert`
+
+Delete a real-time alert: it stops watching at once.
+
+Parameters:
+- `alert_id` **(required)** (string)
+
 ### `describe_fields`
 
 Full definition of data-tool fields, and of the output keys liquidations_24h, oi_usd, cumulative_net_volume, ranking, context: columns, unit of each column, label thresholds, dating, tool, timeframes, history depth, extra parameters. Free, no quota.
 
 Parameters:
 - `fields` **(required)** (array): Field names.
+
+### `get_live_data`
+
+LIVE stream, one pair, over window_seconds (1-60): trades summary (volume_usd, net_flow_usd = aggressive delta, vwap, change_pct, largest), consolidated book (mid, spread_bps, depth_usd, bid_ratio), liquidations. Live tools need WebSocket access and hold one WebSocket connection of your plan per API key (closed after 5 min idle).
+
+Parameters:
+- `pair` **(required)** (string): Pair, e.g. BTCUSDT.
+- `market` (string) — one of futures, spot: 'futures' (perpetual, default) or 'spot'.
+- `window_seconds` (integer)
 
 ### `get_macro_data`
 
@@ -109,7 +144,7 @@ Parameters:
 
 ### `get_market_sentiment`
 
-Computed market sentiment: per pair (volatility, momentum, regime, leverage, oi_price, liquidations, order_flow, liquidity, fear_greed) or, without symbol, the whole market (breadth, market_fear_greed, market_phase). Each value: score 0-100, state (frozen vocabulary), meaning (one sentence with its figures), confidence, drivers, state_since_at; detail=full adds components (sub-indicators with their percentile in the pair's own history). data.summary: one deterministic sentence. Values are computed once per CLOSED 1h/4h/1d bucket and never change; since_ms/last = history of the named indicators. Formulas, weights and every state rule: the REST route /v1/sentiment/methodology. One quota request per pair (or for the market); a history: one per pair x indicator.
+Computed market sentiment: per pair (volatility, momentum, regime, leverage, oi_price, liquidations, order_flow, liquidity, fear_greed) or, without symbol, the whole market (breadth, market_fear_greed, market_phase, risk_appetite = the backdrop outside crypto: US equities, VIX, rates, dollar). Each value: score 0-100, state (frozen vocabulary), meaning (one sentence with its figures), confidence, drivers, state_since_at; detail=full adds components (sub-indicators with their percentile in the pair's own history). data.summary: one deterministic sentence. Values are computed once per CLOSED 1h/4h/1d bucket and never change; since_ms/last = history of the named indicators (any 'over the past week/month' question needs last='7d'/'30d': without it you get only the current value, detail=summary included). Formulas, weights and every state rule: the REST route /v1/sentiment/methodology. One quota request per pair (or for the market); a history: one per pair x indicator.
 
 Parameters:
 - `symbol` (array): 1 to 10 pairs; omit for the whole market.
@@ -123,6 +158,14 @@ Parameters:
 - `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
 - `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 - `max_tokens` (integer): Response budget, estimated tokens (default 6000).
+
+### `get_market_snapshot`
+
+LIVE stream, up to 10 pairs (default the majors) over 5 s: last price, change_pct, volume_usd, net_flow_usd, mid, spread_bps, bid_ratio.
+
+Parameters:
+- `pairs` (array): Pairs, e.g. ['BTCUSDT','ETHUSDT']. Default: the majors.
+- `market` (string) — one of futures, spot: 'futures' (perpetual, default) or 'spot'.
 
 ### `get_onchain_data`
 
@@ -164,7 +207,7 @@ Parameters:
 
 ### `get_options_data`
 
-Options and spot ETFs of ONE asset (BTC or ETH, never a pair). No window = current value; since_ms/until_ms/last = history. Rows newest first, dated at the START of their bucket (first_time + i x step_s); for a total, an extreme or a change read summary, for the period covered read ranges; null + unavailable = no data; _pct = percent, _ratio = fraction; every unit: describe_fields.
+Options and spot ETFs of ONE asset (BTC or ETH, never a pair): ANY spot ETF question (holdings, inflows, issuers) starts here. No window = current value; since_ms/until_ms/last = history. Rows newest first, dated at the START of their bucket (first_time + i x step_s); for a total, an extreme or a change read summary, for the period covered read ranges; null + unavailable = no data; _pct = percent, _ratio = fraction; every unit: describe_fields.
 - expiries=true: active expiries with, PER EXPIRY, OI calls/puts, put/call, max pain, top strikes, ATM IV (options_summary and options_put_call_ratio are totals).
 - options_max_pain: every active expiry, nearest first (limit=N: N nearest); its history needs `expiry`. options_oi_distribution: one `expiry` is much smaller.
 - etf_fundamentals: QUARTERLY SEC filings per issuer (no daily flows); `ticker` keeps one.
@@ -226,25 +269,25 @@ FIELDS:
 - price_change: Current price (last trade) and its rolling % change, 1m to 1w. [now, 1 point]
 - trades_spot: Individual spot trades, most recent first. [now, N<=10000]
 - trades_futures: Individual perpetual futures trades, most recent first. [now, N<=10000]
-- trades_large: Futures trades above `min_usd`, most recent first. [min_usd, now, N<=10000]
+- trades_large: Futures trades above `min_usd`, most recent first. [exchanges, min_usd, now, N<=10000]
 - trades_kline_futures_seconds: Perpetual futures trades aggregated per second. [now]
-- oi: Open interest per bucket, base units and USD (oi_usd). [tf]
+- oi: Open interest per bucket, base units and USD (oi_usd). [tf, exchanges in history]
 - funding_next: Next estimated funding (8h equivalent, %) and APR: what venues show as current. [now, 1 point]
-- funding_rate: Settled funding of each period (8h equivalent, %) and APR.
-- funding_cumulative: Funding summed over a rolling 24h, and APR.
-- basis: Futures/spot basis, % and price (positive = contango). [tf]
-- oi_change: Open interest change per bucket, absolute and in %. [tf]
-- liquidations_events: Individual liquidations: side, price, quantity, USD. [min_usd, now, N<=10000]
-- liquidations_cumulative: USD liquidated per bucket, long and short positions. [tf]
-- liquidations_big_small_ratio: Large vs small liquidations per bucket: counts, USD, ratio. [tf]
-- orderbook: Order book depth (bids, asks, imbalance) by distance from mid. [tf, market]
-- cvd: Volume delta per bucket (net, buy, sell, base units) and its running total cumulative_net_volume. [tf, market, live]
-- spread_interexchange: Price spread between venues, bps (the only field naming venues). [tf, live]
-- buy_sell_ratio: Buy share of the traded volume per bucket. [tf, market]
-- trades_avg_size: Average trade size per bucket (base units). [tf, market]
-- trades_kline: Trade candles, spot + futures: count, buy, sell, net volume. [tf, live, N<=1440]
-- trades_kline_spot: Trade candles, spot: count, buy, sell, net volume. [tf, live, N<=1440]
-- trades_kline_futures: Trade candles, futures: count, buy, sell, net volume. [tf, live, N<=1440]
+- funding_rate: Settled funding of each period (8h equivalent, %) and APR. [exchanges in history]
+- funding_cumulative: Funding summed over a rolling 24h, and APR. [exchanges in history]
+- basis: Futures/spot basis, % and price (positive = contango). [tf, exchanges in history]
+- oi_change: Open interest change per bucket, absolute and in %. [tf, exchanges in history]
+- liquidations_events: Individual liquidations: side, price, quantity, USD. [exchanges, min_usd, now, N<=10000]
+- liquidations_cumulative: USD liquidated per bucket, long and short positions. [tf, exchanges in history]
+- liquidations_big_small_ratio: Large vs small liquidations per bucket: counts, USD, ratio. [tf, exchanges]
+- orderbook: Order book depth (bids, asks, imbalance) by distance from mid. [tf, exchanges, market]
+- cvd: Volume delta per bucket (net, buy, sell, base units) and its running total cumulative_net_volume. [tf, exchanges, market, live]
+- spread_interexchange: Price spread between venues, bps (the only field naming venues). [tf, exchanges in history, live]
+- buy_sell_ratio: Buy share of the traded volume per bucket. [tf, exchanges, market]
+- trades_avg_size: Average trade size per bucket (base units). [tf, exchanges, market]
+- trades_kline: Trade candles, spot + futures: count, buy, sell, net volume. [tf, exchanges in history, live, N<=1440]
+- trades_kline_spot: Trade candles, spot: count, buy, sell, net volume. [tf, exchanges in history, live, N<=1440]
+- trades_kline_futures: Trade candles, futures: count, buy, sell, net volume. [tf, exchanges in history, live, N<=1440]
 - tokenomics: Supply (circulating, total, max), market cap, FDV (USD).
 
 Parameters:
@@ -258,12 +301,19 @@ Parameters:
 - `last` (string): History over the last '48h' / '30d' (whole buckets).
 - `min_usd` (number): USD threshold: trades_large (default 100000), liquidations_events.
 - `market` (string) — one of all, spot, futures: Of cvd, buy_sell_ratio, trades_avg_size, orderbook.
+- `exchanges` (array) — one of aster, binance, bitget, bybit, coinbase, cryptocom, gateio, hyperliquid, kraken, kucoin, mexc, okx: Only these venues instead of the aggregate (flows, trades, OI, funding, basis, liquidations, orderbook, spread; not klines). The response repeats the venues served.
 - `columns` (array): Columns to keep, e.g. ["close", "volume"].
 - `detail` (string) — one of compact, full, summary: summary: one row per series + summary; full: every column.
 - `context` (boolean): Adds `context`: where each series' latest value sits in its own recent history (percentile, z, n, window). Not a signal; no quota.
 - `dry_run` (boolean): Plans the call without making it: its quota cost, your remaining rate and quota, the checks. No data, no quota.
 - `max_quota_cost` (integer): Refuses the call, before any request, if it would use more quota requests than this.
 - `max_tokens` (integer): Response budget, estimated tokens (default 6000).
+
+### `get_stream_status`
+
+Live stream health, your key's live connection, your WebSocket connections and active alerts against the limit.
+
+Parameters:
 
 ### `get_system_info`
 
@@ -276,6 +326,16 @@ Parameters:
 - `catalogs` (array) — one of macro_series, macro_intraday_series, symbol_capabilities: Catalogs to add.
 - `symbol` (string): Pair of symbol_capabilities.
 - `category` (string): Filter of macro_series.
+
+### `list_alerts`
+
+Your alerts: active, and ended in the last 7 days (trigger, webhook delivery). alert_id + wait=true waits for it to fire.
+
+Parameters:
+- `alert_id` (string)
+- `status` (string) — one of active, triggered, expired
+- `wait` (boolean)
+- `wait_seconds` (integer)
 
 ### `rank_pairs`
 

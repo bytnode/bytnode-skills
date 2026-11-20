@@ -1,6 +1,6 @@
 # BytNode REST routes
 
-> Generated from https://api.bytnode.com/openapi.json (contract **1.1.0**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
+> Generated from https://api.bytnode.com/openapi.json (contract **1.1.2**) by `tools/generate_references.py`. Do not edit by hand: regenerate.
 
 144 routes. Base URL `https://api.bytnode.com`, key in `X-API-KEY`. `family` is the identifier `GET /v1/limits` lists in `families` (`null` there = every family). Search this file for a path or a field name.
 
@@ -347,6 +347,7 @@ Parameters:
 - `after_id` — string. Resume right after this trade: the `id` of the last trade received, with its `time` as `since_ms` (order=asc) or `until_ms` (order=desc).
 - `order` — one of asc, desc. Range reading: `desc` (most recent first, the default) or `asc`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,id`.
 
 `data`: list (newest first unless `order=asc`).
@@ -372,6 +373,7 @@ Parameters:
 - `after_id` — string. Resume right after this trade: the `id` of the last trade received, with its `time` as `since_ms` (order=asc) or `until_ms` (order=desc).
 - `order` — one of asc, desc. Range reading: `desc` (most recent first, the default) or `asc`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,id`.
 
 `data`: list (newest first unless `order=asc`).
@@ -396,6 +398,7 @@ Parameters:
 - `after_id` — string. Resume right after this trade: the `id` of the last trade received, with its `time` as `since_ms` (order=asc) or `until_ms` (order=desc).
 - `order` — one of asc, desc. Range reading: `desc` (most recent first, the default) or `asc`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,id`.
 
 `data`: list (newest first unless `order=asc`).
@@ -416,6 +419,7 @@ Taker buy share of volume (`buy_ratio`, a fraction) of the latest CLOSED bucket 
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,buy_volume`.
 
@@ -437,6 +441,7 @@ Perpetual futures market only.
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,buy_volume`.
 
@@ -461,6 +466,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,buy_volume`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -487,6 +493,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,buy_volume`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -510,6 +517,7 @@ Spot market only.
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,buy_volume`.
 
@@ -534,6 +542,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,buy_volume`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -558,6 +567,7 @@ Net taker delta of the latest closed bucket, with its path inside the bucket (`c
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
 - `live` — boolean — default `False`. `1` or `true` to return the CURRENT, still-open period computed on the fly (`is_closed: false`).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,net_volume`.
 
@@ -581,6 +591,7 @@ Perpetual futures market only.
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
 - `live` — boolean — default `False`. `1` or `true` to return the CURRENT, still-open period computed on the fly (`is_closed: false`).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,net_volume`.
 
@@ -606,6 +617,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,net_volume`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -633,6 +645,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,net_volume`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -658,6 +671,7 @@ Spot market only.
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
 - `live` — boolean — default `False`. `1` or `true` to return the CURRENT, still-open period computed on the fly (`is_closed: false`).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,net_volume`.
 
@@ -683,6 +697,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,net_volume`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -707,6 +722,7 @@ Liquidity resting within ±0.25 to ±10 % of the mid price (eight ranges), bids 
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,is_closed`.
 
@@ -723,6 +739,7 @@ Perpetual futures market only.
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,is_closed`.
 
@@ -742,6 +759,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,is_closed`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -763,6 +781,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,is_closed`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -781,6 +800,7 @@ Spot market only.
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,is_closed`.
 
@@ -800,6 +820,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,is_closed`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -819,6 +840,7 @@ Each venue's premium versus the volume-weighted reference price over the bucket,
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
 - `live` — boolean — default `False`. `1` or `true` to return the CURRENT, still-open period computed on the fly (`is_closed: false`).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,is_closed`.
 
@@ -845,6 +867,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,is_closed`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -872,6 +895,7 @@ Parameters:
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
 - `live` — boolean — default `False`. `1` or `true` to return the CURRENT, still-open period computed on the fly (`is_closed: false`).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,trade_count`.
 
 `data`: object or null.
@@ -897,6 +921,7 @@ Parameters:
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
 - `live` — boolean — default `False`. `1` or `true` to return the CURRENT, still-open period computed on the fly (`is_closed: false`).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,trade_count`.
 
 `data`: object or null.
@@ -924,6 +949,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,trade_count`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
@@ -953,6 +979,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `order` — one of asc, desc. Range reading: `desc` (most recent first, the default) or `asc`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,volume`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
 
@@ -980,6 +1007,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,trade_count`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
@@ -1007,6 +1035,7 @@ Parameters:
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
 - `live` — boolean — default `False`. `1` or `true` to return the CURRENT, still-open period computed on the fly (`is_closed: false`).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,trade_count`.
 
 `data`: object or null.
@@ -1034,6 +1063,7 @@ Parameters:
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,trade_count`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
@@ -1059,6 +1089,7 @@ Average trade size (volume / number of trades, all venues) of the latest CLOSED 
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,avg_trade_size`.
 
@@ -1079,6 +1110,7 @@ Perpetual futures market only.
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,avg_trade_size`.
 
@@ -1102,6 +1134,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,avg_trade_size`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -1127,6 +1160,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,avg_trade_size`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -1149,6 +1183,7 @@ Spot market only.
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,avg_trade_size`.
 
@@ -1172,6 +1207,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,avg_trade_size`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -1196,6 +1232,7 @@ Perpetual futures price versus spot, OI-weighted across venues (each venue weigh
 
 Parameters:
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,basis_value`.
 
 `data`: object or null.
@@ -1217,6 +1254,7 @@ Parameters:
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,basis_value`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
@@ -1238,6 +1276,7 @@ Sum of the last three settled 8-hour windows (`rolling_24h_rate_pct`, a ROLLING 
 
 Parameters:
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,window_start_at`.
 
 `data`: object or null.
@@ -1259,6 +1298,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,window_start_at`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
@@ -1280,6 +1320,7 @@ Each venue's forecast of its next settlement, normalised to 8 h and OI-weighted.
 
 Parameters:
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,estimated_rate_pct`.
 
 `data`: object or null.
@@ -1297,6 +1338,7 @@ The last fully settled 8-hour funding window, normalised to 8 h and weighted by 
 Parameters:
 - `live` — boolean — default `False`. `1` or `true` to return the CURRENT, still-open period computed on the fly (`is_closed: false`).
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,period_end_at`.
 
 `data`: object or null.
@@ -1318,6 +1360,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,period_end_at`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
 - `order` — one of asc, desc. Reading order: `desc` (most recent first, the default) or `asc` (oldest first, reading forward from `since_ms`, which is then required).
@@ -1337,6 +1380,7 @@ Open interest. Family: `derivatives`.
 Current total open interest of the perpetual futures, summed across venues (base asset units): for each venue its latest reading, then the sum.
 
 Parameters:
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,oi`.
 
@@ -1351,6 +1395,7 @@ Open interest change. Family: `derivatives`.
 Change of total open interest over the last minute, summed across venues: `oi` (now), `previous_oi`, `oi_change`, `oi_change_pct`.
 
 Parameters:
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,oi`.
 
@@ -1374,6 +1419,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,oi`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -1399,6 +1445,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,oi`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -1420,6 +1467,7 @@ Liquidations of 100,000 USD or more versus smaller ones over the latest CLOSED b
 
 Parameters:
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Bucket size, required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,big_count`.
 
@@ -1445,6 +1493,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,big_count`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -1468,6 +1517,7 @@ Liquidations over the last 5 minutes. Family: `derivatives`.
 Longs and shorts liquidated, USD, all venues, over the last closed 5-minute ROLLING window, aligned on the minute: `time` is its END, `window_start_at` its start, `window_s` its length.
 
 Parameters:
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,long_usd`.
 
@@ -1491,6 +1541,7 @@ Parameters:
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
 - `limit` — integer (min 1, max 1000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `timeframe` **(required)** — one of 1m, 5m, 15m, 30m, 1h, 4h, 1d. Required: `1m`, `5m`, `15m`, `30m`, `1h`, `4h` or `1d`.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,long_usd`.
 - `before_ms` — integer (min 0). Upper time bound, EXCLUSIVE, in epoch milliseconds: rows strictly before it.
@@ -1514,6 +1565,7 @@ Forced liquidations across futures venues, one row per event, most recent first.
 Parameters:
 - `limit` — integer (min 1, max 10000) — default `100`. Number of rows to return, in the reading order (most recent first by default).
 - `min_usd` — number (min 0). Optional minimum notional in USD: only liquidations of at least this size are returned.
+- `exchanges` — string. Restrict the data to these venues, comma-separated, case-insensitive: `binance`, or a basket such as `binance,okx`.
 - `symbol` **(required)**. Trading pair, e.g. `BTCUSDT`.
 - `fields` — string. Comma-separated projection of `data` (dot notation for nested keys): `fields=time,side`.
 
@@ -3110,7 +3162,7 @@ Parameters:
 
 Market sentiment. Family: `indicators`.
 
-The whole market at the latest closed bucket: `breadth` (advancers, McClellan, pairs above their averages, new highs and lows, rotation vs BTC, herding, stablecoin share, BTC dominance), `market_fear_greed` (pairs weighted by open interest 55 %, breadth 30 %, dominance 15 %) and `market_phase` (capitulation, stress, euphoria, recovery, broad rally, altcoin rotation, Bitcoin-led, quiet range, mixe…
+The whole market at the latest closed bucket: `breadth` (advancers, McClellan, pairs above their averages, new highs and lows, rotation vs BTC, herding, stablecoin share, BTC dominance), `market_fear_greed` (pairs weighted by open interest 55 %, breadth 30 %, dominance 15 %), `market_phase` (capitulation, stress, euphoria, recovery, broad rally, altcoin rotation, Bitcoin-led, quiet range, mixed)…
 
 Parameters:
 - `timeframe` — one of 1h, 4h, 1d. Bucket size: `1h` (default), `4h` or `1d`.
@@ -3127,7 +3179,7 @@ Market sentiment history. Family: `indicators`.
 One market indicator, bucket by bucket, computed once per closed bucket.
 
 Parameters:
-- `indicator` **(required)** — string. Market indicator, required: `breadth`, `market_fear_greed` or `market_phase`.
+- `indicator` **(required)** — string. Market indicator, required: `breadth`, `market_fear_greed`, `market_phase` or `risk_appetite`.
 - `timeframe` — one of 1h, 4h, 1d. Bucket size: `1h` (default), `4h` or `1d`.
 - `since_ms` — integer (min 0). Lower time bound, INCLUSIVE, in epoch MILLISECONDS (13 digits).
 - `until_ms` — integer (min 0). Upper time bound, INCLUSIVE to the millisecond, in epoch milliseconds.
