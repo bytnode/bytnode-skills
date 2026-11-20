@@ -61,7 +61,7 @@ Enterprise: by contract. Monthly billing costs more than the yearly rates above.
 - One request = one page of up to 1,000 rows (the max `limit` of most history routes). 30 days of
   1h candles = 720 rows = 1 request; 7 days of 1m candles = 10,080 rows ≈ 11 requests.
 - Ask for the largest page the route allows; prefer the coarsest timeframe that answers the question.
-- The snapshot reads up to 52 fields in ONE request (Traders and up): cheaper than one call per field.
+- The snapshot reads up to 51 fields in ONE request (Traders and up): cheaper than one call per field.
 - `POST /v1/indicators` computes up to 50 indicators in one request.
 - Free at 30 requests/minute: a 60-request job takes at least two minutes; pace it instead of
   hammering into 429s.
