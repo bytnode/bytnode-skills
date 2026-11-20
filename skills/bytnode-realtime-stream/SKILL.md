@@ -74,7 +74,12 @@ http.createServer(async (req, res) => {
   connection (a state, not an acknowledgement). `unsubscribe` is symmetrical.
 - `depth` (1–5 levels per side, default 5) applies to every order book of the connection; each
   `subscribe` resets it. An order book sends its current state immediately on subscription.
-- `"mode": "batch"` in the subscribe groups all pending frames into one message per send: fewer
+- `"exchanges": ["binance"]` (or a basket, `["binance", "okx"]`) in the subscribe serves the listed
+  venues instead of the aggregate: trades and liquidations come as one frame per venue carrying
+  `exchange`; an order book is one book merged over the basket, carrying `exchanges`. At most 20
+  filtered order books per connection; when none of the listed venues carries the channel, the answer is
+  `exchange_not_covered`. A `subscribe` without `exchanges` puts the channels back on the aggregate.
+- `"mode": "batch" in the subscribe groups all pending frames into one message per send: fewer
   messages, same content — use it when you follow many channels.
 - `{"op": "ping"}` → `{"op": "pong"}`. The server also pings every 20 s at the protocol level;
   standard libraries answer it, a hand-written client must (else close 1011).
@@ -109,8 +114,10 @@ Every pushed message: `{channel, server_time, seq, data}`.
 
 ## Losses, reconnection, limits
 
-- `seq` is monotonic per channel from an arbitrary start. A jump between two consecutive messages
-  = messages dropped (your client was too slow: the per-client queue holds ~512 frames). On an
+- `seq` is monotonic per channel (per channel and venue or basket when filtered with `exchanges`)
+  from an arbitrary start. A jump between two consecutive messages
+  = messages dropped (your client was too slow: the per-client queue holds about eight ticks of a
+  full subscription). On an
   event channel the lost events are gone; on an order book the next state replaces everything.
 - **Reconnect** with backoff (0.5 s doubling to 30 s, with jitter), get a new token if browser,
   and **send `subscribe` again** — subscriptions do not survive. Treat the first message after a

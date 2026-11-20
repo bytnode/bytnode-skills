@@ -124,7 +124,7 @@ A field asked from the wrong tool is refused with `wrong_tool` and a `hint` nami
 - **Liquidations over 24 h, longs vs shorts** — `get_pair_data(symbol=["BTCUSDT"],
   fields=["liquidations_cumulative"], timeframe="1h", last="24h", detail="summary")` → read
   `summary.sums.long_usd` / `short_usd` (long = longs liquidated) and check `ranges`.
-- **State of a pair on Free** — `get_pair_data(fields=["klines","funding_rate","oi","basis"],
+- **State of a pair on Free** — `get_pair_data(symbol=["BTCUSDT"], fields=["klines","funding_rate","oi","basis"],
   timeframe="1h", last="1h")` instead of `get_pair_brief`.
 - **Big response** — narrow with `columns`, `detail="summary"` or a coarser `timeframe` first;
   then `read_export(export_id, key, offset)` until `next_offset` is null.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """BytNode WebSocket: live 1-minute candles from trades + liquidations, with reconnection.
 
-    pip install websockets
+    pip install "websockets>=14"
     BYTNODE_API_KEY=cb_live_... python stream_example.py BTCUSDT [--seconds 120]
 
 Server-side client (the key goes in a header). Shows the four rules that matter: bucket on the
@@ -19,7 +19,7 @@ import random
 import time
 from datetime import datetime, timezone
 
-import websockets  # pip install websockets (>= 12)
+import websockets  # pip install "websockets>=14" (additional_headers)
 
 URL = "wss://ws.bytnode.com/ws"
 CLOSE_DELAY_S = 2.0  # late trades: up to ~1.5 s
@@ -96,8 +96,12 @@ async def run(symbol: str, seconds: float) -> None:
                         for liq in msg["data"]:  # side = the liquidated position
                             print(f"liquidation {liq['side']:5} {liq['value_usd']:>12,.0f} USD at {liq['price']}")
                     candles.close_due(time.time())
-        except websockets.InvalidStatus as exc:  # 401 / 403 at the handshake: retrying won't help
-            raise SystemExit(f"handshake refused: HTTP {exc.response.status_code}") from None
+        except websockets.InvalidStatus as exc:
+            status = exc.response.status_code
+            if status not in (429, 503):  # 401 / 403: retrying won't help
+                raise SystemExit(f"handshake refused: HTTP {status}") from None
+            # 429 (opening rate) and 503 (service or per-IP ceiling full): retry later.
+            print(f"handshake HTTP {status}, retrying in {backoff:.1f}s")
         except websockets.ConnectionClosed as exc:
             if exc.rcvd and exc.rcvd.code == 4003:
                 raise SystemExit("4003: connection ceiling of the plan reached") from None
